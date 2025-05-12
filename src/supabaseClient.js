@@ -6,7 +6,5 @@ const supabaseKey = process.env.REACT_APP_SUPABASE_KEY;
 if (!supabaseUrl || !supabaseKey) {
   throw new Error('supabaseUrl и supabaseKey обязательны для настройки Supabase');
 }
-console.log('Supabase URL:', process.env.REACT_APP_SUPABASE_URL);
-console.log('Supabase Key:', process.env.REACT_APP_SUPABASE_KEY);
 
 export const supabase = createClient(supabaseUrl, supabaseKey);

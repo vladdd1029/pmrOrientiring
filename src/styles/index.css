@@ -5,29 +5,29 @@
 }
 
 body {
-  background: linear-gradient(135deg, #1e1e1e, #121212); /* Градиентный фон */
-  color: #e0e0e0; /* Светло-серый текст */
-  font-family: 'Roboto', Arial, sans-serif; /* Современный шрифт */
+  background: #f9f9f9; /* Светло-серый фон */
+  color: #333333; /* Темно-серый текст */
+  font-family: 'Roboto', Arial, sans-serif;
   line-height: 1.6;
 }
 
 a {
-  color: #4caf50; /* Зеленый цвет ссылок */
+  color: #ff9800; /* Оранжевый цвет ссылок */
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 a:hover {
-  color: #81c784; /* Светло-зеленый при наведении */
+  color: #ff5722; /* Темно-оранжевый при наведении */
   text-decoration: underline;
 }
 
 h1, h2, h3 {
   font-weight: 700;
-  color: #ffffff;
+  color: #ff9800; /* Оранжевый заголовок */
 }
 
 p {
   font-size: 1rem;
-  color: #bdbdbd;
+  color: #555555; /* Средне-серый текст */
 }

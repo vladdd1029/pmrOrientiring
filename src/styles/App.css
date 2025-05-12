@@ -1,8 +1,9 @@
 body {
   margin: 0;
   font-family: 'Roboto', Arial, sans-serif;
-  background: linear-gradient(135deg, #1e1e1e, #121212); /* Градиентный фон */
-  color: #e0e0e0;
+  background: #f9f9f9; /* Светло-серый фон */
+  color: #333333; /* Темно-серый текст */
+  line-height: 1.6;
 }
 
 .App {
@@ -10,16 +11,23 @@ body {
   padding: 0;
 }
 
-h1, h2, h3, p {
-  color: #ffffff;
+h1, h2, h3 {
+  color: #ff9800; /* Оранжевый цвет заголовков */
+  margin-bottom: 20px;
+}
+
+p {
+  color: #555555; /* Средне-серый текст */
 }
 
 a {
-  color: #1e90ff; /* Синий цвет ссылок */
+  color: #ff9800; /* Оранжевый цвет ссылок */
   text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 a:hover {
+  color: #ff5722; /* Темно-оранжевый при наведении */
   text-decoration: underline;
 }
 
@@ -27,13 +35,13 @@ a:hover {
   max-width: 1200px;
   margin: 20px auto;
   padding: 20px;
-  background: #1e1e1e; /* Темный фон для контейнеров */
+  background: #ffffff; /* Белый фон для контейнеров */
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Тень */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Легкая тень */
 }
 
 button {
-  background-color: #4caf50; /* Зеленый фон кнопки */
+  background-color: #ff9800; /* Оранжевый фон кнопки */
   color: white;
   border: none;
   padding: 10px 20px;
@@ -44,6 +52,6 @@ button {
 }
 
 button:hover {
-  background-color: #81c784; /* Светло-зеленый при наведении */
+  background-color: #ff5722; /* Темно-оранжевый при наведении */
   transform: scale(1.05); /* Легкое увеличение */
 }

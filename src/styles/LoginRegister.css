@@ -1,0 +1,180 @@
+/* Контейнер для модального окна */
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient( rgba(100, 100, 100, 0.5), rgba(0, 0, 0, 0.5) );
+  /* Полупрозрачный черный фон */
+  backdrop-filter: blur(10px);
+  /* Размытие фона */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding-bottom: 100px;
+  /* Добавляем отступ снизу для кнопки */
+}
+
+/* Основное модальное окно */
+.modal {
+  /* background: #ffffff; Белый фон модального окна */
+  padding: 30px;
+  /* border-radius: 10px; */
+  /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); Легкая тень */
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+  /* Для позиционирования кнопки */
+}
+
+/* Заголовок модального окна */
+.modal h1 {
+  color: #ff9800;
+  /* Оранжевый заголовок */
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+/* Поля ввода */
+.modal input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  /* Светло-серая рамка */
+  border-radius: 10px;
+  background: #f9f9f9;
+  /* Светло-серый фон для полей ввода */
+  color: #333333;
+  /* Темно-серый текст */
+  font-size: 1rem;
+  transition: 0.2s ease;
+
+}
+
+.modal input:hover {
+  transform: scaleY(1.2);
+}
+
+/* Убираем желтый фон автозаполнения */
+.modal input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px #f9f9f9 inset !important;
+  /* Устанавливаем светло-серый фон */
+  -webkit-text-fill-color: #333333 !important;
+  /* Цвет текста */
+}
+
+.modal input:focus {
+  outline: none;
+  border-color: #ff9800;
+  /* Оранжевая рамка при фокусе */
+}
+
+/* Группа ввода */
+.input-group {
+  text-align: left;
+  /* Выравнивание меток по левому краю */
+  margin-bottom: 5px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 0.9rem;
+  color: #555555;
+  /* Средне-серый текст */
+  margin-bottom: 0px;
+}
+
+/* Текст сообщения */
+.modal p {
+  color: #555555;
+  /* Средне-серый текст */
+  margin-top: 10px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* Кнопка закрытия модального окна */
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 3rem;
+  color: #ff9800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.modal-close:hover {
+  transform: scale(1.2);
+  color: #ff5722;
+  background: none;
+  /* Темно-оранжевый при наведении */
+}
+
+/* Контейнер для кнопки и ссылки */
+.modal-footer {
+  margin-top: 20px;
+  display: flex;
+  /* Используем flexbox для расположения элементов */
+  justify-content: space-between;
+  /* Размещаем элементы по краям */
+  align-items: center;
+  /* Выравниваем элементы по вертикали */
+}
+
+/* Ссылка "Зарегистрироваться" */
+.modal-footer p {
+  font-size: 0.9rem;
+  color: #ff9800;
+  /* Оранжевый цвет текста */
+  text-decoration: none;
+  /* Убираем подчеркивание */
+  transition: color 0.3s ease;
+  margin-top: 0;
+}
+
+.modal-footer p:hover {
+  color: #ff5722;
+  /* Темно-оранжевый цвет при наведении */
+}
+
+/* Стили для кнопки */
+.modal-footer button {
+  min-width: 150px;
+  width: max-content;
+  padding: 10px 20px;
+  background-color: #ff9800;
+  /* Оранжевый фон кнопки */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-left: auto;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.modal-footer button:hover {
+  background-color: #ff5722;
+  /* Темно-оранжевый при наведении */
+  transform: scale(1.05);
+  /* Легкое увеличение */
+}
+
+/* Расположение полей ввода в строку */
+.input-row {
+  display: flex;
+  /* Располагаем поля в строку */
+  gap: 10px;
+  /* Расстояние между полями */
+}
+
+.input-row input {
+  flex: 1;
+  /* Поля равной ширины */
+}
