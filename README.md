@@ -1,68 +1,68 @@
-# New Website Documentation
+# Документация для нового веб-сайта
 
-## Overview
-This project is a web application designed to provide information about competitions, news, calendars, documents, learning materials, and clubs. It features a user-friendly interface and allows users to search for competitions by date or name.
+## Обзор
+Этот проект представляет собой веб-приложение, созданное для предоставления информации о соревнованиях, новостях, календарях, документах, учебных материалах и клубах. Приложение имеет удобный интерфейс и позволяет пользователям искать соревнования по дате или названию.
 
-## Project Structure
-The project is organized as follows:
+## Структура проекта
+Проект организован следующим образом:
 
 ```
 new-website
 ├── public
-│   ├── index.html          # Main HTML page of the application
-│   └── favicon.ico         # Website icon displayed in the browser tab
+│   ├── index.html          # Главная HTML-страница приложения
+│   └── favicon.ico         # Иконка сайта, отображаемая в вкладке браузера
 ├── src
-│   ├── components          # Contains reusable components
-│   │   ├── CalendarSearch.js  # Component for searching competitions
-│   │   ├── ClubsContacts.js   # Component displaying clubs and contact info
-│   │   ├── Competitions.js     # Component displaying a list of competitions
-│   │   ├── Documents.js         # Component displaying available documents
-│   │   ├── LearningMaterials.js  # Component displaying learning materials
-│   │   └── News.js              # Component displaying news related to competitions
-│   ├── pages                # Contains page components
-│   │   ├── Calendar.js      # Page using CalendarSearch component
-│   │   ├── Clubs.js         # Page using ClubsContacts component
-│   │   ├── Competitions.js   # Page using Competitions component
-│   │   ├── Documents.js      # Page using Documents component
-│   │   ├── LearningMaterials.js # Page using LearningMaterials component
-│   │   └── News.js          # Page using News component
-│   ├── App.js               # Main component defining routing and page display
-│   ├── index.js             # Entry point rendering the App component
-│   └── styles               # Contains CSS styles
-│       ├── App.css          # Styles for the main component
-│       └── index.css        # Global styles for the application
-├── package.json             # Configuration file for npm dependencies and scripts
-└── README.md                # Documentation for the project
+│   ├── components          # Содержит переиспользуемые компоненты
+│   │   ├── CalendarSearch.js  # Компонент для поиска соревнований
+│   │   ├── ClubsContacts.js   # Компонент с информацией о клубах и контактах
+│   │   ├── Competitions.js    # Компонент для отображения списка соревнований
+│   │   ├── Documents.js       # Компонент для отображения доступных документов
+│   │   ├── LearningMaterials.js # Компонент для отображения учебных материалов
+│   │   └── News.js            # Компонент для отображения новостей
+│   ├── pages                # Содержит страницы приложения
+│   │   ├── Calendar.js      # Страница с компонентом CalendarSearch
+│   │   ├── Clubs.js         # Страница с компонентом ClubsContacts
+│   │   ├── Competitions.js  # Страница с компонентом Competitions
+│   │   ├── Documents.js     # Страница с компонентом Documents
+│   │   ├── LearningMaterials.js # Страница с компонентом LearningMaterials
+│   │   └── News.js          # Страница с компонентом News
+│   ├── App.js               # Основной компонент, определяющий маршруты и отображение страниц
+│   ├── index.js             # Точка входа, рендерящая компонент App
+│   └── styles               # Содержит CSS-стили
+│       ├── App.css          # Стили для основного компонента
+│       └── index.css        # Глобальные стили приложения
+├── package.json             # Конфигурационный файл для npm-зависимостей и скриптов
+└── README.md                # Документация проекта
 ```
 
-## Features
-- **Competitions**: View a list of upcoming competitions.
-- **News**: Stay updated with the latest news related to competitions.
-- **Calendar**: Access a calendar of competitions with a search feature.
-- **Documents**: Download and view important documents.
-- **Learning Materials**: Access educational resources.
-- **Clubs & Contacts**: Find information about clubs and their contact details.
+## Основные возможности
+- **Соревнования**: Просмотр списка предстоящих соревнований.
+- **Новости**: Актуальные новости, связанные с соревнованиями.
+- **Календарь**: Доступ к календарю соревнований с функцией поиска.
+- **Документы**: Загрузка и просмотр важных документов.
+- **Учебные материалы**: Доступ к образовательным ресурсам.
+- **Клубы и контакты**: Информация о клубах и их контактные данные.
 
-## Installation
-To get started with the project, clone the repository and install the dependencies:
+## Установка
+Для начала работы с проектом клонируйте репозиторий и установите зависимости:
 
 ```bash
-git clone <repository-url>
+git clone <URL репозитория>
 cd new-website
 npm install
 ```
 
-## Usage
-To run the application in development mode, use the following command:
+## Использование
+Для запуска приложения в режиме разработки выполните следующую команду:
 
 ```bash
 npm start
 ```
 
-The application will be available at `http://localhost:3000`.
+Приложение будет доступно по адресу `http://localhost:3000`.
 
-## Contributing
-Contributions are welcome! Please submit a pull request or open an issue for any suggestions or improvements.
+## Вклад в проект
+Мы приветствуем ваши предложения и улучшения! Вы можете отправить pull request или открыть issue для обсуждения.
 
-## License
-This project is licensed under the MIT License.
+## Лицензия
+Этот проект распространяется под лицензией MIT.
