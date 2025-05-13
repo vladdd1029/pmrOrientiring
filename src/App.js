@@ -20,6 +20,8 @@ import NewsDetail from './pages/Newsdetail';
 import CompetitionDetail from './pages/CompetitionDetail';
 import CalendarPage from './pages/CalendarPage';
 import DocumentsPage from './pages/DocumentsPage';
+import ClubsPage from './pages/ClubsPage';
+import ClubDetail from './pages/ClubDetail';
 
 function App() {
   const { user, isLoading } = useUser();
@@ -47,6 +49,9 @@ function App() {
         <Route path="/calendar" component={CalendarPage} />
 
         <Route path="/documents" component={DocumentsPage} />
+
+        <Route exact path="/clubs" component={ClubsPage} />
+        <Route path="/clubs/:id" component={ClubDetail} />
 
         {/* Авторизация */}
         {background && (
