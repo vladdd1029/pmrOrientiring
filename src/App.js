@@ -12,7 +12,7 @@ import Register from './pages/Register';
 import UserPanel from './pages/UserPanel';
 import LoadingElement from './components/LoadingElement';
 import AdminRoute from './components/AdminRoute';
-import { useHistory, useLocation } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory, useLocation } from 'react-router-dom';
 
 function App() {
   const { user, isLoading } = useUser();
