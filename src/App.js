@@ -1,9 +1,10 @@
 // src/App.js
 import React from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory, useLocation } from 'react-router-dom';
 import { useUser } from './context/UserContext';
 
 import Navbar from './components/navbar/Navbar';
+
 import Main from './pages/Main';
 import CompetitionsPage from './pages/CompetitionsPage';
 import AdminPanel from './pages/AdminPanel';
@@ -12,7 +13,6 @@ import Register from './pages/Register';
 import UserPanel from './pages/UserPanel';
 import LoadingElement from './components/LoadingElement';
 import AdminRoute from './components/AdminRoute';
-import { useHistory, useLocation } from 'react-router-dom';
 
 function App() {
   const { user, isLoading } = useUser();
