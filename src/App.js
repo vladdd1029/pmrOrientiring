@@ -22,6 +22,8 @@ import CalendarPage from './pages/CalendarPage';
 import DocumentsPage from './pages/DocumentsPage';
 import ClubsPage from './pages/ClubsPage';
 import ClubDetail from './pages/ClubDetail';
+import MaterialsPage from './pages/MaterialsPage';
+import MaterialDetail from './pages/MaterialDetail';
 
 function App() {
   const { user, isLoading } = useUser();
@@ -52,6 +54,9 @@ function App() {
 
         <Route exact path="/clubs" component={ClubsPage} />
         <Route path="/clubs/:id" component={ClubDetail} />
+
+        <Route exact path="/materials" component={MaterialsPage} />
+        <Route path="/materials/:id" component={MaterialDetail} />
 
         {/* Авторизация */}
         {background && (
