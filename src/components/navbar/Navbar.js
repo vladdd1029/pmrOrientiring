@@ -36,6 +36,8 @@ export default function Navbar() {
                     <NavLink exact to="/" activeClassName="active">
                         Главная
                     </NavLink>
+                    <NavLink to="/competitions" activeClassName="active">
+                        Соревнования</NavLink>
                 </li>
                 {user ? (<UserNavbar profile={profile} handleLogout={handleLogout} />) : (<AnonymNavbar />)}
             </ul>

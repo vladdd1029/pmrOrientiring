@@ -6,9 +6,10 @@ import Main from './pages/Main';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import './styles/App.css';
-import UserPanel from './pages/UserPanel';
 import AdminPanel from './pages/AdminPanel';
 import LoadingElement from './components/LoadingElement';
+import CompetitionsPage from './pages/CompetitionsPage';
+
 
 function App() {
   const { user, profile, isLoading } = useUser(); // ← из контекста
@@ -48,6 +49,7 @@ function App() {
       <Navbar />
       <Switch location={background || location}>
         <Route path="/" component={Main} exact />
+        <Route path="/competitions" element={<CompetitionsPage />} />
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
         {profile?.role === 'admin' && (
