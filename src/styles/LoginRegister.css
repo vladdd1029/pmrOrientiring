@@ -32,7 +32,7 @@
 
 /* Заголовок модального окна */
 .modal h1 {
-  color: #ff9800;
+  color: #ffffff;
   /* Оранжевый заголовок */
   font-size: 1.8rem;
   margin-bottom: 20px;
@@ -130,7 +130,7 @@
 /* Ссылка "Зарегистрироваться" */
 .modal-footer p {
   font-size: 0.9rem;
-  color: #ff9800;
+  color: #ffffff;
   /* Оранжевый цвет текста */
   text-decoration: none;
   /* Убираем подчеркивание */
@@ -139,7 +139,8 @@
 }
 
 .modal-footer p:hover {
-  color: #ff5722;
+  color: #cacaca;
+  text-decoration: dotted;
   /* Темно-оранжевый цвет при наведении */
 }
 
