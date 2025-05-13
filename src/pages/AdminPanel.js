@@ -1,34 +1,51 @@
 import React, { useState } from 'react';
-import Modal from '../components/Modal';                // ваш компонент
+import Modal from '../components/Modal';
 import AddCompetitionForm from '../components/AddCompetitionForm';
+import AddNewsForm from '../components/AddNewsForm';
+import AddDocumentForm from '../components/AddDocumentForm';
+import AddMaterialForm from '../components/AddMaterialForm';
+import AddClubForm from '../components/AddClubForm';
 import '../styles/AdminPanel.css';
 
 const AdminPanel = () => {
-  const [modal, setModal] = useState(null); // 'competition' | null
+  const [modalType, setModalType] = useState(null);
+
+  const closeModal = () => setModalType(null);
 
   return (
     <div style={{ padding: '20px' }}>
       <h1>Админпанель</h1>
-
       <div className="admin-cards-grid">
-        {/* Карточка добавления нового соревнования */}
-        <div
-          className="admin-card add-card"
-          onClick={() => setModal('competition')}
-        >
+        <div className="admin-card add-card" onClick={() => setModalType('competition')}>
           <div className="plus-icon">＋</div>
           <div>Добавить соревнование</div>
         </div>
+        <div className="admin-card add-card" onClick={() => setModalType('news')}>
+          <div className="plus-icon">＋</div>
+          <div>Добавить новость</div>
+        </div>
+        <div className="admin-card add-card" onClick={() => setModalType('document')}>
+          <div className="plus-icon">＋</div>
+          <div>Добавить документ</div>
+        </div>
+        <div className="admin-card add-card" onClick={() => setModalType('material')}>
+          <div className="plus-icon">＋</div>
+          <div>Добавить материал</div>
+        </div>
+        <div className="admin-card add-card" onClick={() => setModalType('club')}>
+          <div className="plus-icon">＋</div>
+          <div>Добавить клуб</div>
+        </div>
       </div>
 
-      <Modal
-        isOpen={modal === 'competition'}
-        onClose={() => setModal(null)}
-      >
-        <AddCompetitionForm onSuccess={() => setModal(null)} />
+      <Modal isOpen={modalType !== null} onClose={closeModal}>
+        {modalType === 'competition' && <AddCompetitionForm onSuccess={closeModal} />}
+        {modalType === 'news' && <AddNewsForm onSuccess={closeModal} />}
+        {modalType === 'document' && <AddDocumentForm onSuccess={closeModal} />}
+        {modalType === 'material' && <AddMaterialForm onSuccess={closeModal} />}
+        {modalType === 'club' && <AddClubForm onSuccess={closeModal} />}
       </Modal>
     </div>
   );
-};
-
+}
 export default AdminPanel;

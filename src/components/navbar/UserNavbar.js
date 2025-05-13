@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom/cjs/react-router-dom.min'
 
-export default function UserNavbar({profile, handleLogout}) {
+export default function UserNavbar({ profile, handleLogout }) {
     return (<>
         {profile?.role === "admin" && (
             <li>
