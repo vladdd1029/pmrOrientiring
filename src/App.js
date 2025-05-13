@@ -16,6 +16,7 @@ import AdminRoute from './components/AdminRoute';
 import NewsPage from './pages/NewsPage';
 import NewsDetail from './pages/Newsdetail';
 import CompetitionDetail from './pages/CompetitionDetail';
+import CalendarPage from './pages/CalendarPage';
 
 function App() {
   const { user, isLoading } = useUser();
@@ -36,9 +37,12 @@ function App() {
 
         <Route path="/competitions" component={CompetitionsPage} />
         <Route path="/competition/:id" component={CompetitionDetail} />
-        
+
         <Route path="/news" exact component={NewsPage} />
         <Route path="/news/:id" component={NewsDetail} />
+
+        <Route path="/calendar" component={CalendarPage} />
+
         {/* Авторизация */}
         {background && (
           <>

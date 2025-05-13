@@ -30,6 +30,9 @@ export default function Navbar() {
         <li>
           <NavLink to="/news" activeClassName="active">Новости</NavLink>
         </li>
+        <li>
+          <NavLink to="/calendar" exact activeClassName="active">Календарь</NavLink>
+        </li>
         {user
           ? <UserNavbar profile={profile} handleLogout={handleLogout} />
           : <AnonymNavbar />

@@ -31,3 +31,8 @@ p {
   font-size: 1rem;
   color: #555555; /* Средне-серый текст */
 }
+
+.react-calendar__tile.has-event {
+  background: #ffd700;
+  border-radius: 50%;
+}
