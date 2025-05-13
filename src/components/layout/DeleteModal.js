@@ -1,7 +1,7 @@
 // src/components/DeleteModal.js
 import React, { useState } from 'react';
 import Modal from './Modal';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../../services/supabaseClient';
 
 export default function DeleteModal({
   itemType,   // 'competition' | 'news' | 'document'

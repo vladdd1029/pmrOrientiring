@@ -1,51 +1,22 @@
 // src/pages/CompetitionsPage.js
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../supabaseClient';
-import CompetitionCard from '../components/CompetitionCard';
+import { supabase } from '../services/supabaseClient';
+import CompetitionCard from '../components/cards/CompetitionCard';
+import { fetchCompetitions } from '../services/api';
 
 const CompetitionsPage = () => {
   const [competitions, setCompetitions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAll = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('competitions')
-        .select('*')
-        .order('date', { ascending: true });
-
-      if (error) {
-        console.error('Ошибка при загрузке всех соревнований:', error.message);
-      } else {
-        setCompetitions(data);
-      }
-      setLoading(false);
-    };
-
-    fetchAll();
+    getCompetitions()
   }, []);
 
-  // заново fetch data и setComps
-  const reload = async () => {
-    const fetchAll = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('competitions')
-        .select('*')
-        .order('date', { ascending: true });
-
-      if (error) {
-        console.error('Ошибка при загрузке всех соревнований:', error.message);
-      } else {
-        setCompetitions(data);
-      }
-      setLoading(false);
-    };
-
-    fetchAll();
-  };
-
+  const getCompetitions = () => {
+    setLoading(true);
+    fetchCompetitions().then(setCompetitions).catch(console.error);
+    setLoading(false);
+  }
 
   return (
     <div style={{ padding: '20px' }}>
@@ -59,7 +30,7 @@ const CompetitionsPage = () => {
             <p>Соревнований ещё нет.</p>
           ) : (
             competitions.map((comp) => (
-              <CompetitionCard key={comp.id} competition={comp} onDeleted={() => reload()} />
+              <CompetitionCard key={comp.id} competition={comp} onDeleted={() => getCompetitions()} />
             ))
           )}
         </>

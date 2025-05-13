@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import '../styles/LoginRegister.css'; // Стили для модального окна
+import '../../styles/LoginRegister.css'; // Стили для модального окна
 
 export default function Modal({ children, isOpen, onClose }) {
   if (!isOpen) return null;

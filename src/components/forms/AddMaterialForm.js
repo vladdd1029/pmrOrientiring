@@ -1,7 +1,11 @@
+// src/components/forms/AddMaterialForm.js
 import React, { useState } from 'react';
-import { supabase } from '../supabaseClient';
+// клиент для Storage
+import { supabase } from '../../services/supabaseClient';
+// централизованная функция вставки в таблицу
+import { addMaterial } from '../../services/api';
 
-const AddMaterialForm = ({ onSuccess }) => {
+export default function AddMaterialForm({ onSuccess }) {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -30,35 +34,38 @@ const AddMaterialForm = ({ onSuccess }) => {
 
     let fileUrl = null;
     if (file) {
-      const filePath = `materials/${Date.now()}_${file.name}`;
+      // загрузка в Storage
+      const fileName = `${Date.now()}_${file.name}`;
       const { data: uploadData, error: uploadError } = await supabase
         .storage
         .from('materials')
-        .upload(filePath, file);
+        .upload(fileName, file, { cacheControl: '3600', upsert: false });
       if (uploadError) {
         setStatus({ success: false, message: uploadError.message });
         return;
       }
-      const { publicURL, error: urlError } = supabase
+      // получение публичного URL
+      const { data: urlData, error: urlError } = await supabase
         .storage
         .from('materials')
         .getPublicUrl(uploadData.path);
-      if (urlError) {
-        setStatus({ success: false, message: urlError.message });
+      const publicURL = urlData?.publicUrl ?? urlData?.publicURL;
+      if (urlError || !publicURL) {
+        setStatus({ success: false, message: urlError?.message || 'Не удалось получить URL файла.' });
         return;
       }
       fileUrl = publicURL;
     }
 
-    const { error } = await supabase.from('materials').insert([{
-      title, description, category, file_url: fileUrl
-    }]);
-    if (error) setStatus({ success: false, message: error.message });
-    else {
+    try {
+      // вставка через api.js
+      await addMaterial({ title, description, category, file_url: fileUrl });
       setStatus({ success: true, message: 'Материал добавлен!' });
       setFormData({ title: '', description: '', category: '' });
       setFile(null);
       if (onSuccess) onSuccess();
+    } catch (error) {
+      setStatus({ success: false, message: error.message });
     }
   };
 
@@ -66,19 +73,19 @@ const AddMaterialForm = ({ onSuccess }) => {
     <form onSubmit={handleSubmit}>
       <h2>Добавить учебный материал</h2>
       <div>
-        <label>Название*</label><br/>
+        <label>Название*</label><br />
         <input name="title" value={formData.title} onChange={handleChange} required />
       </div>
       <div>
-        <label>Описание</label><br/>
+        <label>Описание</label><br />
         <textarea name="description" value={formData.description} onChange={handleChange} />
       </div>
       <div>
-        <label>Категория</label><br/>
+        <label>Категория</label><br />
         <input name="category" value={formData.category} onChange={handleChange} />
       </div>
       <div>
-        <label>Файл (опционально)</label><br/>
+        <label>Файл (опционально)</label><br />
         <input type="file" onChange={handleFileChange} />
       </div>
       <button type="submit">Сохранить</button>
@@ -91,4 +98,3 @@ const AddMaterialForm = ({ onSuccess }) => {
   );
 };
 
-export default AddMaterialForm;

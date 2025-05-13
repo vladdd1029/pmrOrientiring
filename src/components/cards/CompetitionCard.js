@@ -1,8 +1,8 @@
 // src/components/CompetitionCard.js
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useUser } from '../context/UserContext';
-import DeleteModal from './DeleteModal';
+import { useUser } from '../../context/UserContext';
+import DeleteModal from '../layout/DeleteModal';
 
 export default function CompetitionCard({ competition, onDeleted }) {
   const { profile } = useUser();

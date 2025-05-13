@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
-import ClubCard from '../components/ClubCard';
+import { supabase } from '../services/supabaseClient';
+import ClubCard from '../components/cards/ClubCard';
+import { fetchClubs } from '../services/api';
 
 export default function ClubsPage() {
   const [clubs, setClubs] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase
-      .from('clubs')
-      .select('*')
-      .order('name', { ascending: true })
-      .then(({ data, error }) => {
-        if (error) console.error(error.message);
-        else setClubs(data);
-        setLoading(false);
-      });
+    getClubs()
   }, []);
+
+  const getClubs = () => {
+    setLoading(true);
+    fetchClubs().then(setClubs).catch(console.error);
+    setLoading(false);
+  }
 
   return (
     <div style={{ padding: '20px' }}>

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'; // Добавляем необходимые импорты
-import { supabase } from '../supabaseClient';
+import { supabase } from '../services/supabaseClient';
 
 
 const UserContext = createContext(); // Создаем контекст

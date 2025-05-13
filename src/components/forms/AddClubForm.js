@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { supabase } from '../supabaseClient';
+import { addClub } from '../../services/api';
 
 const AddClubForm = ({ onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -18,19 +18,21 @@ const AddClubForm = ({ onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus(null);
+
     const { name, description, region, contacts } = formData;
     if (!name) {
       setStatus({ success: false, message: 'Введите название клуба.' });
       return;
     }
-    const { error } = await supabase
-      .from('clubs')
-      .insert([{ name, description, region, contacts }]);
-    if (error) setStatus({ success: false, message: error.message });
-    else {
+
+    try {
+      // вызываем централизованную функцию
+      await addClub({ name, description, region, contacts });
       setStatus({ success: true, message: 'Клуб добавлен!' });
       setFormData({ name: '', description: '', region: '', contacts: '' });
       if (onSuccess) onSuccess();
+    } catch (error) {
+      setStatus({ success: false, message: error.message });
     }
   };
 
@@ -38,19 +40,19 @@ const AddClubForm = ({ onSuccess }) => {
     <form onSubmit={handleSubmit}>
       <h2>Добавить клуб</h2>
       <div>
-        <label>Название*</label><br/>
+        <label>Название*</label><br />
         <input name="name" value={formData.name} onChange={handleChange} required />
       </div>
       <div>
-        <label>Описание</label><br/>
+        <label>Описание</label><br />
         <textarea name="description" value={formData.description} onChange={handleChange} />
       </div>
       <div>
-        <label>Регион</label><br/>
+        <label>Регион</label><br />
         <input name="region" value={formData.region} onChange={handleChange} />
       </div>
       <div>
-        <label>Контакты</label><br/>
+        <label>Контакты</label><br />
         <input name="contacts" value={formData.contacts} onChange={handleChange} />
       </div>
       <button type="submit">Сохранить</button>

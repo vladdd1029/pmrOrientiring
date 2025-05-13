@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
-import Modal from '../components/Modal';
+import { supabase } from '../services/supabaseClient';
+import Modal from '../components/layout/Modal';
 import LoadingElement from '../components/LoadingElement';
 import { NavLink } from 'react-router-dom/cjs/react-router-dom.min';
 

@@ -1,7 +1,8 @@
 // src/pages/NewsDetail.js
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../services/supabaseClient';
+import { fetchDocuments,  fetchNewsItem } from '../services/api';
 
 
 const NewsDetail = () => {
@@ -11,33 +12,24 @@ const NewsDetail = () => {
   const [documents, setDocuments] = useState([]);
 
   useEffect(() => {
-    const fetchNews = async () => {
+    const fetchData = async () => {
       setLoading(true);
 
-      // 1. Загрузка самой новости
-      const { data, error } = await supabase
-        .from('news')
-        .select('*')
-        .eq('id', id)
-        .single();
-      if (error) console.error('Ошибка загрузки новости:', error.message);
-      else setNews(data);
-      setLoading(false);
+      // 1. Загрузка самого соревнования
+      const newEl = await fetchNewsItem(id)
+        .catch(err => console.error(err.message));
+      setNews(newEl);
 
       // 2. Загрузка документов, привязанных к соревнованию
-      const { data: docs, error: docsErr } = await supabase
-        .from('documents')
-        .select('*')
-        .eq('news_id', id)
-        .order('uploaded_at', { ascending: false });
-      if (docsErr) {
-        console.error('Ошибка загрузки документов:', docsErr.message);
-      } else {
-        setDocuments(docs);
-      }
+      const docs = await fetchDocuments()
+        .then(arr => arr.filter(d => d.news_id === id))
+        .catch(err => console.error(err.message));
+      setDocuments(docs);
+
+      setLoading(false);
     };
 
-    fetchNews();
+    fetchData()
   }, [id]);
 
   if (loading) return <p>Загрузка...</p>;

@@ -1,7 +1,9 @@
+// src/components/forms/AddNewsForm.js
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+// CRUD-функции
+import { fetchCompetitions, addNews } from '../../services/api';
 
-const AddNewsForm = ({ onSuccess }) => {
+export default function AddNewsForm({ onSuccess }) {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -11,15 +13,10 @@ const AddNewsForm = ({ onSuccess }) => {
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
-    // Загружаем список соревнований для селекта
-    supabase
-      .from('competitions')
-      .select('id, title')
-      .order('date', { ascending: true })
-      .then(({ data, error }) => {
-        if (error) console.error(error.message);
-        else setCompetitions(data);
-      });
+    // Загрузка списка соревнований через api.js
+    fetchCompetitions()
+      .then(data => setCompetitions(data))
+      .catch(err => console.error('fetchCompetitions:', err.message));
   }, []);
 
   const handleChange = (e) => {
@@ -30,19 +27,25 @@ const AddNewsForm = ({ onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus(null);
+
     const { title, content, competition_id } = formData;
     if (!title) {
       setStatus({ success: false, message: 'Введите заголовок.' });
       return;
     }
-    const { error } = await supabase
-      .from('news')
-      .insert([{ title, content, competition_id: competition_id || null }]);
-    if (error) setStatus({ success: false, message: error.message });
-    else {
+
+    try {
+      // Вызов централизованной функции
+      await addNews({
+        title,
+        content,
+        competition_id: competition_id || null
+      });
       setStatus({ success: true, message: 'Новость добавлена!' });
       setFormData({ title: '', content: '', competition_id: '' });
       if (onSuccess) onSuccess();
+    } catch (error) {
+      setStatus({ success: false, message: error.message });
     }
   };
 
@@ -89,4 +92,3 @@ const AddNewsForm = ({ onSuccess }) => {
   );
 };
 
-export default AddNewsForm;

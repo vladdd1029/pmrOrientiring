@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { supabase } from '../supabaseClient';
+import { addCompetition } from '../../services/api';
 
 const AddCompetitionForm = () => {
   const [formData, setFormData] = useState({
@@ -31,15 +31,15 @@ const AddCompetitionForm = () => {
       return;
     }
 
-    const { error } = await supabase.from('competitions').insert([
-      { title, date, location, description, create_news }
-    ]);
-
-    if (error) {
-      setStatus({ success: false, message: error.message });
-    } else {
+    try {
+      // Вызов централизованной функции
+      await addCompetition({ title, date, location, description, create_news });
       setStatus({ success: true, message: 'Соревнование успешно добавлено!' });
       setFormData({ title: '', date: '', location: '', description: '', create_news: false });
+      if (onSuccess) onSuccess();
+    } catch (error) {
+      // Ошибка из addCompetition пробрасывается вверх
+      setStatus({ success: false, message: error.message });
     }
   };
 

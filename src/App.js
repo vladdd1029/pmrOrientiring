@@ -3,27 +3,29 @@ import React from 'react';
 import { Route, Switch, Redirect, useHistory, useLocation } from 'react-router-dom';
 import { useUser } from './context/UserContext';
 
-import './styles/index.css';
+import AdminRoute from './components/AdminRoute';
 
-import Navbar from './components/navbar/Navbar';
+
+import Navbar from './components/layout/Navbar';
+import LoadingElement from './components/LoadingElement';
 
 import Main from './pages/Main';
 import CompetitionsPage from './pages/CompetitionsPage';
-import AdminPanel from './pages/AdminPanel';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import UserPanel from './pages/UserPanel';
-import LoadingElement from './components/LoadingElement';
-import AdminRoute from './components/AdminRoute';
-import NewsPage from './pages/NewsPage';
-import NewsDetail from './pages/Newsdetail';
 import CompetitionDetail from './pages/CompetitionDetail';
+import NewsPage from './pages/NewsPage';
+import NewsDetail from './pages/NewsDetail';
 import CalendarPage from './pages/CalendarPage';
 import DocumentsPage from './pages/DocumentsPage';
 import ClubsPage from './pages/ClubsPage';
 import ClubDetail from './pages/ClubDetail';
 import MaterialsPage from './pages/MaterialsPage';
 import MaterialDetail from './pages/MaterialDetail';
+import Register from './pages/Register';
+import Login from './pages/Login';
+import UserPanel from './pages/UserPanel';
+import AdminPanel from './pages/AdminPanel';
+
+import './styles/index.css';
 
 function App() {
   const { user, isLoading } = useUser();

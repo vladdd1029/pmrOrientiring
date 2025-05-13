@@ -1,39 +1,22 @@
 // src/pages/NewsPage.js
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../supabaseClient';
-import NewsCard from '../components/NewsCard';
+import { supabase } from '../services/supabaseClient';
+import NewsCard from '../components/cards/NewsCard';
+import { fetchNews } from '../services/api';
 
 const NewsPage = () => {
   const [newsList, setNewsList] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadNews = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('news')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (error) console.error('Ошибка загрузки новостей:', error.message);
-      else setNewsList(data);
-      setLoading(false);
-    };
-    loadNews();
+    getNews()
   }, []);
 
-  const reload = () => {
-    const loadNews = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('news')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (error) console.error('Ошибка загрузки новостей:', error.message);
-      else setNewsList(data);
-      setLoading(false);
-    };
-    loadNews();
-  };
+  const getNews = () => {
+    setLoading(true);
+    fetchNews().then(setNewsList).catch(console.error);
+    setLoading(false);
+  }
 
   return (
     <div style={{ padding: '20px' }}>
@@ -44,7 +27,7 @@ const NewsPage = () => {
           newsList.length === 0
             ? <p>Новостей пока нет.</p>
             : newsList.map(n => (
-              <NewsCard key={n.id} news={n} onDeleted={() => reload()} />
+              <NewsCard key={n.id} news={n} onDeleted={() => getNews()} />
             ))
         )
       }

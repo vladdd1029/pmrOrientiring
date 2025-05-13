@@ -1,8 +1,8 @@
 // src/components/NewsCard.js
 import React, { useState } from 'react';
-import { useUser } from '../context/UserContext';
+import { useUser } from '../../context/UserContext';
 import { Link } from 'react-router-dom';
-import DeleteModal from './DeleteModal';
+import DeleteModal from '../layout/DeleteModal';
 
 export default function NewsCard({ news, onDeleted }) {
   const { profile } = useUser();

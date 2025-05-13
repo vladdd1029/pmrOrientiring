@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { supabase } from '../supabaseClient';
+import { fetchCompetition, fetchDocuments } from '../services/api';
 
 const CompetitionDetail = () => {
   const { id } = useParams();
@@ -13,28 +13,15 @@ const CompetitionDetail = () => {
       setLoading(true);
 
       // 1. Загрузка самого соревнования
-      const { data: comp, error: compErr } = await supabase
-        .from('competitions')
-        .select('*')
-        .eq('id', id)
-        .single();
-      if (compErr) {
-        console.error('Ошибка загрузки соревнования:', compErr.message);
-      } else {
-        setCompetition(comp);
-      }
+      const comp = await fetchCompetition(id)
+        .catch(err => console.error(err.message));
+      setCompetition(comp);
 
       // 2. Загрузка документов, привязанных к соревнованию
-      const { data: docs, error: docsErr } = await supabase
-        .from('documents')
-        .select('*')
-        .eq('competition_id', id)
-        .order('uploaded_at', { ascending: false });
-      if (docsErr) {
-        console.error('Ошибка загрузки документов:', docsErr.message);
-      } else {
-        setDocuments(docs);
-      }
+      const docs = await fetchDocuments()
+        .then(arr => arr.filter(d => d.competition_id === id))
+        .catch(err => console.error(err.message));
+      setDocuments(docs);
 
       setLoading(false);
     };

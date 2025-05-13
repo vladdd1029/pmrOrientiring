@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
-import { supabase } from '../../supabaseClient';
+import { supabase } from '../../services/supabaseClient';
 import '../../styles/Navbar.css';
 import UserNavbar from './UserNavbar';
 import AnonymNavbar from './AnonymNavbar';

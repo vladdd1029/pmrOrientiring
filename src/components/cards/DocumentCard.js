@@ -1,7 +1,7 @@
 // src/components/DocumentCard.js
 import React, { useState } from 'react';
-import { useUser } from '../context/UserContext';
-import DeleteModal from './DeleteModal';
+import { useUser } from '../../context/UserContext';
+import DeleteModal from '../layout/DeleteModal';
 
 export default function DocumentCard({ document, onDeleted }) {
   const { profile } = useUser();

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { supabase } from '../supabaseClient';
-import CompetitionCard from '../components/CompetitionCard';
+import { supabase } from '../services/supabaseClient';
+import CompetitionCard from '../components/cards/CompetitionCard';
 
 const CalendarPage = () => {
   const [events, setEvents] = useState([]);

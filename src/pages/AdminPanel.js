@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import Modal from '../components/Modal';
-import AddCompetitionForm from '../components/AddCompetitionForm';
-import AddNewsForm from '../components/AddNewsForm';
-import AddDocumentForm from '../components/AddDocumentForm';
-import AddMaterialForm from '../components/AddMaterialForm';
-import AddClubForm from '../components/AddClubForm';
+import Modal from '../components/layout/Modal';
+import AddCompetitionForm from '../components/forms/AddCompetitionForm';
+import AddNewsForm from '../components/forms/AddNewsForm';
+import AddDocumentForm from '../components/forms/AddDocumentForm';
+import AddMaterialForm from '../components/forms/AddMaterialForm';
+import AddClubForm from '../components/forms/AddClubForm';
 import '../styles/AdminPanel.css';
 
 const AdminPanel = () => {

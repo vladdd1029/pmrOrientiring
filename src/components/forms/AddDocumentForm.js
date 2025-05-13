@@ -1,33 +1,30 @@
-// src/components/AddDocumentForm.js
+// src/components/forms/AddDocumentForm.js
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+// храним здесь только client для Storage
+import { supabase } from '../../services/supabaseClient';
+// CRUD-функции из api.js
+import { fetchCompetitions, fetchNews, addDocument } from '../../services/api';
 
-const AddDocumentForm = ({ onSuccess }) => {
+export default function AddDocumentForm({ onSuccess }) {
   const [title, setTitle] = useState('');
   const [linkType, setLinkType] = useState('none'); // 'none' | 'competition' | 'news'
   const [competitionId, setCompetitionId] = useState('');
   const [newsId, setNewsId] = useState('');
   const [file, setFile] = useState(null);
+
   const [competitions, setCompetitions] = useState([]);
   const [newsList, setNewsList] = useState([]);
   const [status, setStatus] = useState(null);
 
-  // Загружаем списки соревнований и новостей
+  // Загрузка списков соревнований и новостей через api.js
   useEffect(() => {
-    async function fetchOptions() {
-      const { data: comps } = await supabase
-        .from('competitions')
-        .select('id, title')
-        .order('date', { ascending: true });
-      setCompetitions(comps || []);
+    fetchCompetitions()
+      .then(setCompetitions)
+      .catch(err => console.error('fetchCompetitions:', err.message));
 
-      const { data: newsData } = await supabase
-        .from('news')
-        .select('id, title')
-        .order('created_at', { ascending: false });
-      setNewsList(newsData || []);
-    }
-    fetchOptions();
+    fetchNews()
+      .then(setNewsList)
+      .catch(err => console.error('fetchNews:', err.message));
   }, []);
 
   const handleFileChange = e => setFile(e.target.files[0]);
@@ -50,54 +47,41 @@ const AddDocumentForm = ({ onSuccess }) => {
       return;
     }
 
-    // Генерация имени файла (без вложенной папки)
+    // Загрузка файла в Storage
     const fileName = `${Date.now()}_${file.name}`;
-
-    // 1) Загружаем файл
     const { data: uploadData, error: uploadError } = await supabase
       .storage
       .from('documents')
       .upload(fileName, file, { cacheControl: '3600', upsert: false });
-
-    console.log('⚙️ uploadData:', uploadData);
-    console.log('⚠️ uploadError:', uploadError);
 
     if (uploadError) {
       setStatus({ success: false, message: uploadError.message });
       return;
     }
 
-    // 2) Получаем public URL по пути из uploadData
+    // Получаем публичный URL
     const { data: urlData, error: urlError } = await supabase
       .storage
       .from('documents')
       .getPublicUrl(uploadData.path);
-
-    // В зависимости от версии клиента URL может быть в urlData.publicUrl или urlData.publicURL
     const publicURL = urlData?.publicUrl ?? urlData?.publicURL;
 
     if (urlError || !publicURL) {
-      setStatus({
-        success: false,
-        message: urlError?.message || 'Не удалось получить публичный URL файла.'
-      });
+      setStatus({ success: false, message: urlError?.message || 'Не удалось получить URL файла.' });
       return;
     }
 
-    // 3) Вставляем запись в таблицу
+    // Формируем объект для вставки
     const insertObj = {
       title,
       file_url: publicURL,
       competition_id: linkType === 'competition' ? competitionId : null,
-      news_id: linkType === 'news' ? newsId : null
+      news_id: linkType === 'news' ? newsId : null,
     };
-    const { error: insertError } = await supabase
-      .from('documents')
-      .insert([insertObj]);
 
-    if (insertError) {
-      setStatus({ success: false, message: insertError.message });
-    } else {
+    // Вставка через api.js
+    try {
+      await addDocument(insertObj);
       setStatus({ success: true, message: 'Документ добавлен!' });
       // Сброс полей
       setTitle('');
@@ -106,6 +90,8 @@ const AddDocumentForm = ({ onSuccess }) => {
       setCompetitionId('');
       setNewsId('');
       if (onSuccess) onSuccess();
+    } catch (error) {
+      setStatus({ success: false, message: error.message });
     }
   };
 
@@ -187,4 +173,3 @@ const AddDocumentForm = ({ onSuccess }) => {
   );
 };
 
-export default AddDocumentForm;

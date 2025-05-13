@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { supabase } from '../supabaseClient';
-import Modal from '../components/Modal';
+import { supabase } from '../services/supabaseClient';
+import Modal from '../components/layout/Modal';
 import { NavLink } from 'react-router-dom/cjs/react-router-dom.min';
 
 export default function Register({ isOpen, onClose }) {
