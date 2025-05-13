@@ -61,7 +61,7 @@ const CompetitionDetail = () => {
         </div>
       )}
 
-      {documents.length > 0 && (
+      {documents.length > 0 ? (
         <div>
           <h2>Документы</h2>
           <ul>
@@ -78,7 +78,7 @@ const CompetitionDetail = () => {
             ))}
           </ul>
         </div>
-      )}
+      ) : <h2>Документов пока нет</h2>}
 
       <Link to="/competitions">
         <button>Вернуться к списку соревнований</button>
