@@ -3,6 +3,8 @@ import React from 'react';
 import { Route, Switch, Redirect, useHistory, useLocation } from 'react-router-dom';
 import { useUser } from './context/UserContext';
 
+import './styles/index.css';
+
 import Navbar from './components/navbar/Navbar';
 
 import Main from './pages/Main';

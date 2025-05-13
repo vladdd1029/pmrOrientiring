@@ -1,34 +1,34 @@
 // src/components/CompetitionCard.js
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
+import DeleteModal from './DeleteModal';
 
-const CompetitionCard = ({ competition }) => {
-  const { id, title, date, location } = competition;
-  const formattedDate = new Date(date).toLocaleDateString('ru-RU', {
-    year: 'numeric', month: 'long', day: 'numeric'
-  });
+export default function CompetitionCard({ competition, onDeleted }) {
+  const { profile } = useUser();
+  const [showDel, setShowDel] = useState(false);
 
   return (
-    <Link
-      to={`/competition/${id}`}
-      style={{ textDecoration: 'none', color: 'inherit', display: 'block', marginBottom: '10px' }}
-    >
-      <div
-        style={{
-          border: '1px solid #ccc',
-          borderRadius: '8px',
-          padding: '12px',
-          transition: 'box-shadow .2s',
-        }}
-        onMouseEnter={e => e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'}
-        onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
-      >
-        <h3 style={{ margin: '0 0 8px' }}>{title}</h3>
-        <p style={{ margin: '0 0 4px' }}><strong>Дата:</strong> {formattedDate}</p>
-        <p style={{ margin: 0 }}><strong>Место:</strong> {location}</p>
-      </div>
-    </Link>
-  );
-};
+    <>
+      <Link to={`/competition/${competition.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+        <div className="card">
+          <h3>{competition.title}</h3>
+          <p>Дата: {new Date(competition.date).toLocaleDateString('ru-RU')}</p>
+          <p>Место: {competition.location}</p>
+        </div>
+      </Link>
+      {profile?.role === 'admin' && (
+        <button className="delete-btn" onClick={() => setShowDel(true)}>x</button>
+      )}
 
-export default CompetitionCard;
+
+      <DeleteModal
+        itemType="competition"
+        item={competition}
+        isOpen={showDel}
+        onClose={() => setShowDel(false)}
+        onDeleted={onDeleted}
+      />
+    </>
+  );
+}

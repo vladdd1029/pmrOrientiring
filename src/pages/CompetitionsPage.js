@@ -26,6 +26,27 @@ const CompetitionsPage = () => {
     fetchAll();
   }, []);
 
+  // заново fetch data и setComps
+  const reload = async () => {
+    const fetchAll = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('competitions')
+        .select('*')
+        .order('date', { ascending: true });
+
+      if (error) {
+        console.error('Ошибка при загрузке всех соревнований:', error.message);
+      } else {
+        setCompetitions(data);
+      }
+      setLoading(false);
+    };
+
+    fetchAll();
+  };
+
+
   return (
     <div style={{ padding: '20px' }}>
       <h1>Все соревнования</h1>
@@ -38,7 +59,7 @@ const CompetitionsPage = () => {
             <p>Соревнований ещё нет.</p>
           ) : (
             competitions.map((comp) => (
-              <CompetitionCard key={comp.id} competition={comp} />
+              <CompetitionCard key={comp.id} competition={comp} onDeleted={() => reload()} />
             ))
           )}
         </>

@@ -5,34 +5,71 @@
 }
 
 body {
-  background: #f9f9f9; /* Светло-серый фон */
-  color: #333333; /* Темно-серый текст */
+  background: #f9f9f9;
+  /* Светло-серый фон */
+  color: #333333;
+  /* Темно-серый текст */
   font-family: 'Roboto', Arial, sans-serif;
   line-height: 1.6;
 }
 
 a {
-  color: #ff9800; /* Оранжевый цвет ссылок */
+  color: #ff9800;
+  /* Оранжевый цвет ссылок */
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 a:hover {
-  color: #ff5722; /* Темно-оранжевый при наведении */
+  color: #ff5722;
+  /* Темно-оранжевый при наведении */
   text-decoration: underline;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-weight: 700;
-  color: #ff9800; /* Оранжевый заголовок */
+  color: #ff9800;
+  /* Оранжевый заголовок */
 }
 
 p {
   font-size: 1rem;
-  color: #555555; /* Средне-серый текст */
+  color: #555555;
+  /* Средне-серый текст */
 }
 
 .react-calendar__tile.has-event {
   background: #ffd700;
   border-radius: 50%;
+}
+
+
+.card {
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+  transition: box-shadow .2s;
+}
+
+.card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.delete-btn {
+  top: 8px;
+  right: 8px;
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #e74c3c;
+  transition: all .2s ease;
+}
+.delete-btn:hover {
+  transform: scale(1.2);
+  color: #c0392b;
 }
