@@ -2,6 +2,81 @@
 
 import { supabase } from './supabaseClient';
 
+
+// === PROFILES ===
+export async function fetchProfile() {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', supabase.auth.user().id)
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateProfile(changes) {
+  // changes = { chip_number?, phone?, team_id?, birthdate? }
+  const uid = supabase.auth.user().id;
+  const { data, error } = await supabase
+    .from('profiles')
+    .update(changes)
+    .eq('id', uid)
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+// === TRAINER APPLICATIONS ===
+export async function applyTrainerApplication() {
+  const uid = supabase.auth.user().id;
+  const { data, error } = await supabase
+    .from('trainer_applications')
+    .insert([{ user_id: uid }])
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchMyApplications() {
+  const uid = supabase.auth.user().id;
+  const { data, error } = await supabase
+    .from('trainer_applications')
+    .select('*')
+    .eq('user_id', uid)
+    .order('submitted_at', { ascending: false });
+  if (error) throw error;
+  return data;
+}
+
+// Для админа:
+export async function fetchAllApplications() {
+  const { data, error } = await supabase
+    .from('trainer_applications')
+    .select('*, profiles(name)')  // или какие поля нужны
+    .order('submitted_at', { ascending: false });
+  if (error) throw error;
+  return data;
+}
+
+export async function reviewApplication(id, { status, note }) {
+  const uid = supabase.auth.user().id; // админ
+  const { data, error } = await supabase
+    .from('trainer_applications')
+    .update({ status, note, reviewed_at: new Date().toISOString(), admin_id: uid })
+    .eq('id', id)
+    .single();
+  if (error) throw error;
+  // если approved, меняем роль в profiles:
+  if (status === 'approved') {
+    await supabase
+      .from('profiles')
+      .update({ role: 'trainer' })
+      .eq('id', data.user_id);
+  }
+  return data;
+}
+
+
 /** СОРЕВНОВАНИЯ */
 export async function fetchCompetitions() {
   const { data, error } = await supabase

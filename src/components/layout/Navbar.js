@@ -46,6 +46,16 @@ export default function Navbar() {
             Материалы
           </NavLink>
         </li>
+        <li>
+          <NavLink to="/profile" activeClassName="active">Профиль</NavLink>
+        </li>
+        {profile?.role === 'admin' && (
+          <li>
+            <NavLink to="/admin/applications" activeClassName="active">
+              Заявки тренеров
+            </NavLink>
+          </li>
+        )}
         {user
           ? <UserNavbar profile={profile} handleLogout={handleLogout} />
           : <AnonymNavbar />

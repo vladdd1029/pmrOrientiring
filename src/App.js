@@ -60,6 +60,11 @@ function App() {
         <Route exact path="/materials" component={MaterialsPage} />
         <Route path="/materials/:id" component={MaterialDetail} />
 
+        <Route path="/profile" component={ProfilePage} />
+        {profile?.role === 'admin' && (
+          <Route path="/admin/applications" component={AdminApplicationsPage} />
+        )}
+
         {/* Авторизация */}
         {background && (
           <>
