@@ -1,0 +1,90 @@
+import React, { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
+
+const CompetitionDetail = () => {
+  const { id } = useParams();
+  const [competition, setCompetition] = useState(null);
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+
+      // 1. Загрузка самого соревнования
+      const { data: comp, error: compErr } = await supabase
+        .from('competitions')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (compErr) {
+        console.error('Ошибка загрузки соревнования:', compErr.message);
+      } else {
+        setCompetition(comp);
+      }
+
+      // 2. Загрузка документов, привязанных к соревнованию
+      const { data: docs, error: docsErr } = await supabase
+        .from('documents')
+        .select('*')
+        .eq('competition_id', id)
+        .order('uploaded_at', { ascending: false });
+      if (docsErr) {
+        console.error('Ошибка загрузки документов:', docsErr.message);
+      } else {
+        setDocuments(docs);
+      }
+
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [id]);
+
+  if (loading) return <p>Загрузка...</p>;
+  if (!competition) return <p>Соревнование не найдено.</p>;
+
+  const { title, date, location, description } = competition;
+  const formattedDate = new Date(date).toLocaleDateString('ru-RU', {
+    year: 'numeric', month: 'long', day: 'numeric'
+  });
+
+  return (
+    <div style={{ padding: '20px' }}>
+      <h1>{title}</h1>
+      <p><strong>Дата:</strong> {formattedDate}</p>
+      <p><strong>Место:</strong> {location}</p>
+      {description && (
+        <div style={{ margin: '20px 0' }}>
+          <p>{description}</p>
+        </div>
+      )}
+
+      {documents.length > 0 && (
+        <div>
+          <h2>Документы</h2>
+          <ul>
+            {documents.map(doc => (
+              <li key={doc.id}>
+                <a
+                  href={doc.file_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {doc.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <Link to="/competitions">
+        <button>Вернуться к списку соревнований</button>
+      </Link>
+    </div>
+  );
+};
+
+export default CompetitionDetail;
