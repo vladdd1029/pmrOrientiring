@@ -1,33 +1,29 @@
-import React from 'react'
-import { NavLink, useLocation } from 'react-router-dom/cjs/react-router-dom.min'
+import React from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 
 export default function AnonymNavbar() {
-    const location = useLocation(); // Получаем текущий location
+  const location = useLocation(); // Получаем текущий location
 
-    return (
-        <>
-            <li>
-                <NavLink
-                    to={{
-                        pathname: "/login",
-                        state: { background: location }, // Передаем background
-                    }}
-                    activeClassName="active"
-                >
-                    Вход
-                </NavLink>
-            </li>
-            <li>
-                <NavLink
-                    to={{
-                        pathname: "/register",
-                        state: { background: location }, // Передаем background
-                    }}
-                    activeClassName="active"
-                >
-                    Регистрация
-                </NavLink>
-            </li>
-        </>
-    )
+  return (
+    <>
+      <li>
+        <NavLink
+          to="/login"
+          state={{ background: location }}
+          className={({ isActive }) => (isActive ? 'active' : '')}
+        >
+          Вход
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          to="/register"
+          state={{ background: location }}
+          className={({ isActive }) => (isActive ? 'active' : '')}
+        >
+          Регистрация
+        </NavLink>
+      </li>
+    </>
+  );
 }
