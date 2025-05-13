@@ -28,13 +28,13 @@ const AdminPanel = () => {
           <div className="plus-icon">＋</div>
           <div>Добавить документ</div>
         </div>
-        <div className="admin-card add-card" onClick={() => setModalType('material')}>
-          <div className="plus-icon">＋</div>
-          <div>Добавить материал</div>
-        </div>
         <div className="admin-card add-card" onClick={() => setModalType('club')}>
           <div className="plus-icon">＋</div>
           <div>Добавить клуб</div>
+        </div>
+        <div className="admin-card add-card" onClick={() => setModalType('material')}>
+          <div className="plus-icon">＋</div>
+          <div>Добавить материал</div>
         </div>
       </div>
 
@@ -42,8 +42,8 @@ const AdminPanel = () => {
         {modalType === 'competition' && <AddCompetitionForm onSuccess={closeModal} />}
         {modalType === 'news' && <AddNewsForm onSuccess={closeModal} />}
         {modalType === 'document' && <AddDocumentForm onSuccess={closeModal} />}
-        {modalType === 'material' && <AddMaterialForm onSuccess={closeModal} />}
         {modalType === 'club' && <AddClubForm onSuccess={closeModal} />}
+        {modalType === 'material' && <AddMaterialForm onSuccess={closeModal} />}
       </Modal>
     </div>
   );
