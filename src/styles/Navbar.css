@@ -46,3 +46,15 @@
   background-color: #ff5722; /* Темно-оранжевый фон при наведении на активную ссылку */
   color: #ffffff; /* Белый текст */
 }
+
+.logout-button {
+  background-color: #ff0000; /* Оранжевый фон */
+  color: #ffffff; /* Белый текст */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
