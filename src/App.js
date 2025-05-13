@@ -17,6 +17,7 @@ import NewsPage from './pages/NewsPage';
 import NewsDetail from './pages/Newsdetail';
 import CompetitionDetail from './pages/CompetitionDetail';
 import CalendarPage from './pages/CalendarPage';
+import DocumentsPage from './pages/DocumentsPage';
 
 function App() {
   const { user, isLoading } = useUser();
@@ -42,6 +43,8 @@ function App() {
         <Route path="/news/:id" component={NewsDetail} />
 
         <Route path="/calendar" component={CalendarPage} />
+
+        <Route path="/documents" component={DocumentsPage} />
 
         {/* Авторизация */}
         {background && (
