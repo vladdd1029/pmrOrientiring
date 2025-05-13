@@ -1,9 +1,18 @@
+// src/pages/ProfilePage.js
 import React, { useState, useEffect } from 'react';
-import { fetchProfile, updateProfile, fetchMyApplications, applyTrainerApplication } from '../services/api';
-import { fetchClubs } from '../services/api';
+import { useUser } from '../context/UserContext';
+import {
+  fetchProfile,
+  updateProfile,
+  fetchMyApplications,
+  applyTrainerApplication,
+  fetchClubs
+} from '../services/api';
 import { formatRUDate } from '../utils/formatDate';
+import LoadingElement from '../components/LoadingElement';
 
 export default function ProfilePage() {
+  const { user } = useUser();
   const [profile, setProfile] = useState(null);
   const [clubs, setClubs] = useState([]);
   const [formData, setFormData] = useState({
@@ -16,11 +25,12 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState(null);
 
-  // Загрузка профиля, клубов и заявок
   useEffect(() => {
-    async function load() {
+    if (!user) return;
+    setLoading(true);
+    (async () => {
       try {
-        const p = await fetchProfile();
+        const p = await fetchProfile(user.id);
         setProfile(p);
         setFormData({
           chip_number: p.chip_number || '',
@@ -28,18 +38,16 @@ export default function ProfilePage() {
           team_id: p.team_id || '',
           birthdate: p.birthdate || ''
         });
-        const clubList = await fetchClubs();
-        setClubs(clubList);
-        const myApps = await fetchMyApplications();
-        setApps(myApps);
+        setClubs(await fetchClubs());
+        setApps(await fetchMyApplications(user.id));
       } catch (err) {
         console.error(err);
+        setProfile(null);
       } finally {
         setLoading(false);
       }
-    }
-    load();
-  }, []);
+    })();
+  }, [user]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -50,44 +58,74 @@ export default function ProfilePage() {
     e.preventDefault();
     setStatus(null);
     try {
-      const updated = await updateProfile(formData);
-      setProfile(updated);
+      // Выполняем обновление
+      await updateProfile(user.id, formData);
+      // После обновления заново запрашиваем профиль, чтобы получить все поля
+      const fresh = await fetchProfile(user.id);
+      setProfile(fresh);
       setStatus({ success: true, message: 'Профиль сохранён.' });
     } catch (err) {
-      setStatus({ success: false, message: err.message });
+      console.error('❌ updateProfile error object:', err);
+      // Показываем реальное сообщение от Supabase, а не фиксированный текст
+      setStatus({ success: false, message: `Ошибка сохранения: ${err.message}` });
     }
   };
 
   const handleApply = async () => {
     setStatus(null);
     try {
-      await applyTrainerApplication();
-      const myApps = await fetchMyApplications();
-      setApps(myApps);
+      await applyTrainerApplication(user.id);
+      setApps(await fetchMyApplications(user.id));
       setStatus({ success: true, message: 'Заявка отправлена.' });
     } catch (err) {
       setStatus({ success: false, message: err.message });
     }
   };
 
-  if (loading) return <p>Загрузка профиля…</p>;
-  if (!profile) return <p>Профиль не найден.</p>;
+
+
+  if (loading) return <div>
+    <p><br /><br /><br />
+    </p>
+    <LoadingElement />
+  </div>;
+  // Показываем форму даже если profile==null, но информируем об ошибке
+  if (!profile) {
+    return (
+      <div style={{ padding: 20 }}>
+        <p style={{ color: 'red' }}>Не удалось загрузить профиль.</p>
+      </div>
+    );
+  }
 
   return (
     <div style={{ padding: 20 }}>
       <h1>Мой профиль</h1>
+
       <form onSubmit={handleSave}>
         <div>
-          <label>Чип-номер</label><br/>
-          <input name="chip_number" value={formData.chip_number} onChange={handleChange} />
+          <label>Чип-номер</label><br />
+          <input
+            name="chip_number"
+            value={formData.chip_number}
+            onChange={handleChange}
+          />
         </div>
         <div>
-          <label>Телефон</label><br/>
-          <input name="phone" value={formData.phone} onChange={handleChange} />
+          <label>Телефон</label><br />
+          <input
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+          />
         </div>
         <div>
-          <label>Команда</label><br/>
-          <select name="team_id" value={formData.team_id} onChange={handleChange}>
+          <label>Команда</label><br />
+          <select
+            name="team_id"
+            value={formData.team_id}
+            onChange={handleChange}
+          >
             <option value="">— Не выбрано —</option>
             {clubs.map(c => (
               <option key={c.id} value={c.id}>{c.name}</option>
@@ -95,11 +133,17 @@ export default function ProfilePage() {
           </select>
         </div>
         <div>
-          <label>Дата рождения</label><br/>
-          <input name="birthdate" type="date" value={formData.birthdate} onChange={handleChange} />
+          <label>Дата рождения</label><br />
+          <input
+            name="birthdate"
+            type="date"
+            value={formData.birthdate}
+            onChange={handleChange}
+          />
         </div>
         <button type="submit">Сохранить</button>
       </form>
+
       {status && (
         <div style={{ color: status.success ? 'green' : 'red', marginTop: 10 }}>
           {status.message}
@@ -107,9 +151,8 @@ export default function ProfilePage() {
       )}
 
       <h2 style={{ marginTop: 30 }}>Заявки на роль тренера</h2>
-      {apps.length === 0 ? (
-        <p>Заявок нет.</p>
-      ) : (
+      {apps.length === 0 && <p>Заявок нет.</p>}
+      {apps.length > 0 && (
         <ul>
           {apps.map(app => (
             <li key={app.id}>
@@ -118,12 +161,14 @@ export default function ProfilePage() {
           ))}
         </ul>
       )}
-      {profile.role === 'user' && apps.every(a => a.status === 'pending') === false && (
+
+      {/* Кнопка отправки заявки, если user и ещё не было pending */}
+      {!apps.some(a => a.status === 'pending') && profile.role === 'user' && (
         <button onClick={handleApply} style={{ marginTop: 10 }}>
           Отправить заявку тренера
         </button>
       )}
-      {profile.role === 'user' && apps.some(a => a.status === 'pending') && (
+      {apps.some(a => a.status === 'pending') && (
         <p>Ваша заявка на рассмотрении.</p>
       )}
     </div>

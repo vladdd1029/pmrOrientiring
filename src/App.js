@@ -26,9 +26,11 @@ import UserPanel from './pages/UserPanel';
 import AdminPanel from './pages/AdminPanel';
 
 import './styles/index.css';
+import ProfilePage from './pages/ProfilePage';
+import AdminApplicationsPage from './pages/AdminApplicationsPage';
 
 function App() {
-  const { user, isLoading } = useUser();
+  const { profile, isLoading } = useUser();
   const location = useLocation();
   const history = useHistory();
 

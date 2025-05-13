@@ -19,6 +19,7 @@ export default function AdminApplicationsPage() {
     try {
       await reviewApplication(id, { status: newStatus, note: noteMap[id] || '' });
       setApps(apps.map(a => a.id === id ? { ...a, status: newStatus, reviewed_at: new Date().toISOString(), admin_id: /* текущий админ */ null } : a));
+      setNoteMap(prev => ({ ...prev, [id]: '' }));
     } catch (err) {
       alert(err.message);
     }

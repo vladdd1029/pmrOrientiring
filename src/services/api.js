@@ -3,46 +3,53 @@
 import { supabase } from './supabaseClient';
 
 
-// === PROFILES ===
-export async function fetchProfile() {
+// src/services/api.js
+/**
+ * Возвращает текущий user.id, или кидает ошибку, если не залогинен
+ */
+async function getCurrentUserId() {
+  const { data, error } = await supabase.auth.getUser();
+  if (error) throw error;
+  if (!data.user) throw new Error('Пользователь не авторизован');
+  return data.user.id;
+}
+
+/** ПРОФИЛИ */
+export async function fetchProfile(userId) {
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
-    .eq('id', supabase.auth.user().id)
+    .eq('id', userId)
     .single();
   if (error) throw error;
   return data;
 }
 
-export async function updateProfile(changes) {
-  // changes = { chip_number?, phone?, team_id?, birthdate? }
-  const uid = supabase.auth.user().id;
+export async function updateProfile(userId, changes) {
   const { data, error } = await supabase
     .from('profiles')
     .update(changes)
-    .eq('id', uid)
+    .eq('id', userId)
     .single();
   if (error) throw error;
   return data;
 }
 
-// === TRAINER APPLICATIONS ===
-export async function applyTrainerApplication() {
-  const uid = supabase.auth.user().id;
+/** ЗАЯВКИ ТРЕНЕРОВ */
+export async function applyTrainerApplication(userId) {
   const { data, error } = await supabase
     .from('trainer_applications')
-    .insert([{ user_id: uid }])
+    .insert([{ user_id: userId }])
     .single();
   if (error) throw error;
   return data;
 }
 
-export async function fetchMyApplications() {
-  const uid = supabase.auth.user().id;
+export async function fetchMyApplications(userId) {
   const { data, error } = await supabase
     .from('trainer_applications')
     .select('*')
-    .eq('user_id', uid)
+    .eq('user_id', userId)
     .order('submitted_at', { ascending: false });
   if (error) throw error;
   return data;
@@ -52,28 +59,56 @@ export async function fetchMyApplications() {
 export async function fetchAllApplications() {
   const { data, error } = await supabase
     .from('trainer_applications')
-    .select('*, profiles(name)')  // или какие поля нужны
+    .select(`
+      *,
+      user:profiles!trainer_applications_user_id_fkey(
+        id,
+        fullname,
+        email
+      ),
+      admin:profiles!trainer_applications_admin_id_fkey(
+        id,
+        fullname,
+        email
+      )
+    `)
     .order('submitted_at', { ascending: false });
+
   if (error) throw error;
   return data;
 }
 
-export async function reviewApplication(id, { status, note }) {
-  const uid = supabase.auth.user().id; // админ
-  const { data, error } = await supabase
+export async function reviewApplication(applicationId, { status, note }) {
+  const adminId = await getCurrentUserId();
+
+  // 1) Обновляем заявку и сразу запрашиваем все поля
+  const { data: app, error: reviewError } = await supabase
     .from('trainer_applications')
-    .update({ status, note, reviewed_at: new Date().toISOString(), admin_id: uid })
-    .eq('id', id)
-    .single();
-  if (error) throw error;
-  // если approved, меняем роль в profiles:
+    .update(
+      {
+        status,
+        note,
+        reviewed_at: new Date().toISOString(),
+        admin_id: adminId
+      },
+      { returning: 'representation' }  // <- опционально для явного возврата
+    )
+    .eq('id', applicationId)
+    .select('*')                       // <- добавляем select
+    .single();                         // <- и single
+
+  if (reviewError) throw reviewError;
+
+  // 2) Если одобрена — меняем роль профиля тренера
   if (status === 'approved') {
-    await supabase
+    const { error: roleError } = await supabase
       .from('profiles')
       .update({ role: 'trainer' })
-      .eq('id', data.user_id);
+      .eq('id', app.user_id);
+    if (roleError) throw roleError;
   }
-  return data;
+
+  return app;
 }
 
 
