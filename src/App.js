@@ -1,6 +1,6 @@
 // src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import { useUser } from './context/UserContext';
 
 import Navbar from './components/navbar/Navbar';
@@ -10,17 +10,22 @@ import AdminPanel from './pages/AdminPanel';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import UserPanel from './pages/UserPanel';
-import LoadingElement from './components/LoadingElement'; // если есть компонент
-
+import LoadingElement from './components/LoadingElement';
 import AdminRoute from './components/AdminRoute';
+import { useHistory, useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 
 function App() {
   const { user, isLoading } = useUser();
+  const location = useLocation();
+  const history = useHistory();
+
+  // теперь background — строка пути или undefined
+  const background = location.state && location.state.background;
 
   if (isLoading) return <LoadingElement />;
 
   return (
-    <Router>
+    <>
       <Navbar />
       <Switch>
         {/* Публичные */}
@@ -28,14 +33,28 @@ function App() {
         <Route path="/competitions" component={CompetitionsPage} />
 
         {/* Авторизация */}
-        <Route
-          path="/login"
-          render={() => (user ? <Redirect to="/" /> : <Login />)}
-        />
-        <Route
-          path="/register"
-          render={() => (user ? <Redirect to="/" /> : <Register />)}
-        />
+        {background && (
+          <>
+            <Route
+              path="/login"
+              render={() => (
+                <Login
+                  isOpen={true}
+                  onClose={() => history.push(background)}
+                />
+              )}
+            />
+            <Route
+              path="/register"
+              render={() => (
+                <Register
+                  isOpen={true}
+                  onClose={() => history.push(background)}
+                />
+              )}
+            />
+          </>
+        )}
 
         {/* Кабинет юзера */}
         <Route path="/user" component={UserPanel} />
@@ -43,10 +62,10 @@ function App() {
         {/* Админка */}
         <AdminRoute path="/adminPanel" component={AdminPanel} />
 
-        {/* Всё остальное */}
+        {/* Всегда редирект на главную */}
         <Route render={() => <Redirect to="/" />} />
       </Switch>
-    </Router>
+    </>
   );
 }
 

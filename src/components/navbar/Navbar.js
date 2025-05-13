@@ -9,33 +9,25 @@ export default function Navbar() {
   const { user, profile, setUser, isLoading } = useUser();
 
   const handleLogout = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      setUser(null);
-    } catch (error) {
-      console.error('Ошибка выхода:', error.message);
-    }
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error(error.message);
+    else setUser(null);
   };
 
   if (isLoading) {
-    return (
-      <nav className="navbar">
-        <p>Загрузка...</p>
-      </nav>
-    );
+    return <nav className="navbar"><p>Загрузка...</p></nav>;
   }
 
   return (
     <nav className="navbar">
       <ul>
         <li>
-          <NavLink to="/" end className={({ isActive }) => isActive ? 'active' : ''}>
+          <NavLink exact to="/" activeClassName="active">
             Главная
           </NavLink>
         </li>
         <li>
-          <NavLink to="/competitions" className={({ isActive }) => isActive ? 'active' : ''}>
+          <NavLink to="/competitions" activeClassName="active">
             Соревнования
           </NavLink>
         </li>
