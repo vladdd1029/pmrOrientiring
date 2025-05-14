@@ -1,6 +1,7 @@
 // src/pages/ProfilePage.js
 import React, { useState, useEffect } from 'react';
 import { useUser } from '../context/UserContext';
+import { useHistory } from 'react-router-dom';      // ← импортируем
 import {
   fetchProfile,
   updateProfile,
@@ -10,9 +11,11 @@ import {
 } from '../services/api';
 import { formatRUDate } from '../utils/formatDate';
 import LoadingElement from '../components/LoadingElement';
+import { supabase } from '../services/supabaseClient';
 
 export default function ProfilePage() {
-  const { user } = useUser();
+  const { user, setUser } = useUser();
+  const history = useHistory();
   const [profile, setProfile] = useState(null);
   const [clubs, setClubs] = useState([]);
   const [formData, setFormData] = useState({
@@ -26,7 +29,7 @@ export default function ProfilePage() {
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) history.push('/'); // редирект на главную, если нет user
     setLoading(true);
     (async () => {
       try {
@@ -48,6 +51,16 @@ export default function ProfilePage() {
       }
     })();
   }, [user]);
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error(error.message);
+    } else {
+      setUser(null);
+      history.push('/');                              // ← редирект на главную
+    }
+  };
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -149,6 +162,9 @@ export default function ProfilePage() {
           {status.message}
         </div>
       )}
+      <button onClick={handleLogout} className="logout-button">
+        Выйти
+      </button>
 
       <h2 style={{ marginTop: 30 }}>Заявки на роль тренера</h2>
       {apps.length === 0 && <p>Заявок нет.</p>}

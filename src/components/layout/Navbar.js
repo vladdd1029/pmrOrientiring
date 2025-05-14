@@ -1,18 +1,11 @@
 import { NavLink } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
-import { supabase } from '../../services/supabaseClient';
 import '../../styles/Navbar.css';
 import UserNavbar from './UserNavbar';
 import AnonymNavbar from './AnonymNavbar';
 
 export default function Navbar() {
-  const { user, profile, setUser, isLoading } = useUser();
-
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) console.error(error.message);
-    else setUser(null);
-  };
+  const { user, profile, isLoading } = useUser();
 
   if (isLoading) {
     return <nav className="navbar"><p>Загрузка...</p></nav>;
@@ -46,18 +39,9 @@ export default function Navbar() {
             Материалы
           </NavLink>
         </li>
-        <li>
-          <NavLink to="/profile" activeClassName="active">Профиль</NavLink>
-        </li>
-        {profile?.role === 'admin' && (
-          <li>
-            <NavLink to="/admin/applications" activeClassName="active">
-              Заявки тренеров
-            </NavLink>
-          </li>
-        )}
+
         {user
-          ? <UserNavbar profile={profile} handleLogout={handleLogout} />
+          ? <UserNavbar profile={profile} />
           : <AnonymNavbar />
         }
       </ul>
