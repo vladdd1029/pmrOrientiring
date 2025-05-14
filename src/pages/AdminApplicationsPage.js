@@ -46,8 +46,10 @@ export default function AdminApplicationsPage() {
           <tbody>
             {apps.map(app => (
               <tr key={app.id}>
-                <td>{app.user.first_name} {app.user.last_name}</td>
-                <td>{app.club?.name || '–'}</td>
+                <td>
+                  {app.user.first_name} {app.user.last_name} {app.user.middle_name}
+                </td>
+                <td>{app.user.team?.name || '—'}</td>
                 <td>{formatRUDate(app.submitted_at)}</td>
                 <td>{app.status}</td>
                 <td>

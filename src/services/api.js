@@ -69,11 +69,10 @@ export async function fetchAllApplications() {
         last_name,
         middle_name,
         email,
-        team_id
-      ),
-      club:clubs!profiles_team_id_fkey(
-        id,
-        name
+        team:clubs!profiles_team_id_fkey(
+          id,
+          name
+        )
       )
     `)
     .order('submitted_at', { ascending: false });
@@ -81,7 +80,6 @@ export async function fetchAllApplications() {
   if (error) throw error;
   return data;
 }
-
 
 export async function reviewApplication(applicationId, { status, note }) {
   const adminId = await getCurrentUserId();

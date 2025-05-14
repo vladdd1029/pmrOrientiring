@@ -37,6 +37,7 @@ export default function ProfilePage() {
     (async () => {
       try {
         const p = await fetchProfile(user.id);
+        setProfile(p)
         setFormData({
           first_name: p.first_name || '',
           last_name: p.last_name || '',
