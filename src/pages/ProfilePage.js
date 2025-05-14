@@ -19,6 +19,9 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState(null);
   const [clubs, setClubs] = useState([]);
   const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    middle_name: '',
     chip_number: '',
     phone: '',
     team_id: '',
@@ -34,8 +37,10 @@ export default function ProfilePage() {
     (async () => {
       try {
         const p = await fetchProfile(user.id);
-        setProfile(p);
         setFormData({
+          first_name: p.first_name || '',
+          last_name: p.last_name || '',
+          middle_name: p.middle_name || '',
           chip_number: p.chip_number || '',
           phone: p.phone || '',
           team_id: p.team_id || '',
@@ -85,6 +90,10 @@ export default function ProfilePage() {
   };
 
   const handleApply = async () => {
+    if (!profile.team_id) {
+      setStatus({ success: false, message: 'Сначала выберите клуб в профиле.' });
+      return;
+    }
     setStatus(null);
     try {
       await applyTrainerApplication(user.id);
@@ -116,6 +125,33 @@ export default function ProfilePage() {
       <h1>Мой профиль</h1>
 
       <form onSubmit={handleSave}>
+        <div className='FIO-inputs'>
+          <div>
+            <label>Имя</label><br />
+            <input
+              name="first_name"
+              value={formData.first_name}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label>Фамилия</label><br />
+            <input
+              name="last_name"
+              value={formData.last_name}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label>Отчество</label><br />
+            <input
+              name="middle_name"
+              value={formData.middle_name}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        {/* далее уже были Чип-номер, Телефон, Команда, ДР */}
         <div>
           <label>Чип-номер</label><br />
           <input

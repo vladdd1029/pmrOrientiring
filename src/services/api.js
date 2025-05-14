@@ -56,6 +56,8 @@ export async function fetchMyApplications(userId) {
 }
 
 // Для админа:
+// src/services/api.js
+
 export async function fetchAllApplications() {
   const { data, error } = await supabase
     .from('trainer_applications')
@@ -63,13 +65,15 @@ export async function fetchAllApplications() {
       *,
       user:profiles!trainer_applications_user_id_fkey(
         id,
-        fullname,
-        email
+        first_name,
+        last_name,
+        middle_name,
+        email,
+        team_id
       ),
-      admin:profiles!trainer_applications_admin_id_fkey(
+      club:clubs!profiles_team_id_fkey(
         id,
-        fullname,
-        email
+        name
       )
     `)
     .order('submitted_at', { ascending: false });
@@ -77,6 +81,7 @@ export async function fetchAllApplications() {
   if (error) throw error;
   return data;
 }
+
 
 export async function reviewApplication(applicationId, { status, note }) {
   const adminId = await getCurrentUserId();
