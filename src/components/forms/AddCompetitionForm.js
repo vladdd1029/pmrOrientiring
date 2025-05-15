@@ -15,6 +15,21 @@ export default function AddCompetitionForm({ onSuccess }) {
 
   const mutation = useMutation({
     mutationFn: addCompetition,
+    onMutate: async newComp => {
+      await queryClient.cancelQueries({ queryKey: ['competitions'] });
+      // 1) забираем старые
+      const previous = queryClient.getQueryData(['competitions']) || [];
+      // 2) создаём временный id
+      const tempId = `temp-${Date.now()}`;
+      // 3) optimistic объект с уникальным ключом
+      const optimisticComp = { id: tempId, ...newComp };
+      // 4) кладём его в кеш
+      queryClient.setQueryData(
+        ['competitions'],
+        old => [...old, optimisticComp]
+      );
+      return { previous };
+    },
     onError: (err, newComp, context) => {
       queryClient.setQueryData(['competitions'], context.previous);
       setStatus({ success: false, message: err.message });

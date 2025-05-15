@@ -24,7 +24,6 @@ export default function AddNewsForm({ onSuccess }) {
     onError: err => setStatus({ success: false, message: err.message }),
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['news'] });
-      queryClient.invalidateQueries({ queryKey: ['competitions'] });
     },
     onSuccess: () => {
       setStatus({ success: true, message: 'Новость добавлена!' });
