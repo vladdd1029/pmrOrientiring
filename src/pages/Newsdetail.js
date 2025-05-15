@@ -1,84 +1,71 @@
 // src/pages/NewsDetail.js
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { supabase } from '../services/supabaseClient';
-import { fetchDocuments,  fetchNewsItem } from '../services/api';
+import { useQuery } from '@tanstack/react-query';
+import { fetchNewsItem, fetchDocuments } from '../services/api';
+import LoadingElement from '../components/LoadingElement';
+import { formatRUDate } from '../utils/formatDate';
 
-
-const NewsDetail = () => {
+export default function NewsDetail() {
   const { id } = useParams();
-  const [news, setNews] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [documents, setDocuments] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-
-      // 1. Загрузка самого соревнования
-      const newEl = await fetchNewsItem(id)
-        .catch(err => console.error(err.message));
-      setNews(newEl);
-
-      // 2. Загрузка документов, привязанных к соревнованию
-      const docs = await fetchDocuments()
-        .then(arr => arr.filter(d => d.news_id === id))
-        .catch(err => console.error(err.message));
-      setDocuments(docs);
-
-      setLoading(false);
-    };
-
-    fetchData()
-  }, [id]);
-
-  if (loading) return <p>Загрузка...</p>;
-  if (!news) return <p>Новость не найдена.</p>;
-
-  const { title, content, created_at, competition_id } = news;
-  const date = new Date(created_at).toLocaleDateString('ru-RU', {
-    year: 'numeric', month: 'long', day: 'numeric'
+  const {
+    data: news,
+    error: newsError,
+    isLoading: newsLoading,
+  } = useQuery({
+    queryKey: ['newsItem', id],
+    queryFn: () => fetchNewsItem(id),
+    staleTime: 1000 * 60 * 5,
   });
 
+  const {
+    data: documents = [],
+    error: docsError,
+    isLoading: docsLoading,
+  } = useQuery({
+    queryKey: ['documentsByNews', id],
+    queryFn: () => fetchDocuments().then(arr => arr.filter(d => d.news_id === id)),
+    staleTime: 1000 * 60 * 5,
+  });
+
+  if (newsLoading || docsLoading) {
+    return <LoadingElement />;
+  }
+  if (newsError) {
+    return <p style={{ color: 'red' }}>Ошибка при загрузке новости: {newsError.message}</p>;
+  }
+  if (!news) {
+    return <p>Новость не найдена.</p>;
+  }
+
+  const { title, content, created_at } = news;
+  const formattedDate = formatRUDate(created_at);
+
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: 20 }}>
       <h1>{title}</h1>
-      <p style={{ fontSize: '0.9em', color: '#666' }}>{date}</p>
-      <div style={{ margin: '20px 0' }}>
-        {content}
-      </div>
-      {competition_id && (
-        <p>
-          <Link to={`/competition/${competition_id}`}>
-            Перейти к соревнованию
-          </Link>
-        </p>
+      <p><em>Опубликовано: {formattedDate}</em></p>
+      {content && <div style={{ margin: '20px 0' }}><p>{content}</p></div>}
+
+      <h2>Документы</h2>
+      {documents.length > 0 ? (
+        <ul>
+          {documents.map(doc => (
+            <li key={doc.id}>
+              <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
+                {doc.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Документов пока нет.</p>
       )}
 
-      {documents.length > 0 ? (
-        <div>
-          <h2>Документы</h2>
-          <ul>
-            {documents.map(doc => (
-              <li key={doc.id}>
-                <a
-                  href={doc.file_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {doc.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : <h2>Документов пока нет</h2>}
-
       <Link to="/news">
-        <button>Вернуться к новостям</button>
+        <button>Вернуться к списку новостей</button>
       </Link>
     </div>
   );
-};
-
-export default NewsDetail;
+}

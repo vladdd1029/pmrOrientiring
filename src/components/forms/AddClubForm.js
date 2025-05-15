@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addClub } from '../../services/api';
 
-const AddClubForm = ({ onSuccess }) => {
+export default function AddClubForm({ onSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -9,31 +10,32 @@ const AddClubForm = ({ onSuccess }) => {
     contacts: ''
   });
   const [status, setStatus] = useState(null);
+  const queryClient = useQueryClient();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setStatus(null);
-
-    const { name, description, region, contacts } = formData;
-    if (!name) {
-      setStatus({ success: false, message: 'Введите название клуба.' });
-      return;
-    }
-
-    try {
-      // вызываем централизованную функцию
-      await addClub({ name, description, region, contacts });
+  const mutation = useMutation({
+    mutationFn: addClub,
+    onError: err => setStatus({ success: false, message: err.message }),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['clubs'] }),
+    onSuccess: () => {
       setStatus({ success: true, message: 'Клуб добавлен!' });
       setFormData({ name: '', description: '', region: '', contacts: '' });
       if (onSuccess) onSuccess();
-    } catch (error) {
-      setStatus({ success: false, message: error.message });
     }
+  });
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setFormData(fd => ({ ...fd, [name]: value }));
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    setStatus(null);
+    if (!formData.name) {
+      setStatus({ success: false, message: 'Введите название клуба.' });
+      return;
+    }
+    mutation.mutate(formData);
   };
 
   return (
@@ -55,7 +57,9 @@ const AddClubForm = ({ onSuccess }) => {
         <label>Контакты</label><br />
         <input name="contacts" value={formData.contacts} onChange={handleChange} />
       </div>
-      <button type="submit">Сохранить</button>
+      <button type="submit" disabled={mutation.isLoading}>
+        {mutation.isLoading ? 'Сохраняем…' : 'Сохранить'}
+      </button>
       {status && (
         <div style={{ color: status.success ? 'green' : 'red', marginTop: 10 }}>
           {status.message}
@@ -63,6 +67,4 @@ const AddClubForm = ({ onSuccess }) => {
       )}
     </form>
   );
-};
-
-export default AddClubForm;
+}

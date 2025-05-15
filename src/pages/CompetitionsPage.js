@@ -1,42 +1,44 @@
 // src/pages/CompetitionsPage.js
-import React, { useEffect, useState } from 'react';
-import { supabase } from '../services/supabaseClient';
-import CompetitionCard from '../components/cards/CompetitionCard';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { fetchCompetitions } from '../services/api';
+import CompetitionCard from '../components/cards/CompetitionCard';
 
-const CompetitionsPage = () => {
-  const [competitions, setCompetitions] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function CompetitionsPage() {
+  const { data: competitions, error, isLoading } = useQuery({
+    queryKey: ['competitions'],
+    queryFn: fetchCompetitions,
+    staleTime: 1000 * 60 * 5, // кеш 5 минут
+  });
 
-  useEffect(() => {
-    getCompetitions()
-  }, []);
+  if (isLoading) {
+    return (
+      <div style={{ padding: '20px' }}>
+        <p>Загрузка соревнований…</p>
+      </div>
+    );
+  }
 
-  const getCompetitions = () => {
-    setLoading(true);
-    fetchCompetitions().then(setCompetitions).catch(console.error);
-    setLoading(false);
+  if (error) {
+    return (
+      <div style={{ padding: '20px' }}>
+        <p style={{ color: 'red' }}>
+          Ошибка при загрузке соревнований: {error.message}
+        </p>
+      </div>
+    );
   }
 
   return (
     <div style={{ padding: '20px' }}>
       <h1>Все соревнования</h1>
-
-      {loading ? (
-        <p>Загрузка...</p>
+      {competitions.length === 0 ? (
+        <p>Соревнований ещё нет.</p>
       ) : (
-        <>
-          {competitions.length === 0 ? (
-            <p>Соревнований ещё нет.</p>
-          ) : (
-            competitions.map((comp) => (
-              <CompetitionCard key={comp.id} competition={comp} onDeleted={() => getCompetitions()} />
-            ))
-          )}
-        </>
+        competitions.map(comp => (
+          <CompetitionCard key={comp.id} competition={comp} />
+        ))
       )}
     </div>
   );
-};
-
-export default CompetitionsPage;
+}

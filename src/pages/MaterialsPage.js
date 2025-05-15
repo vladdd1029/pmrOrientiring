@@ -1,30 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../services/supabaseClient';
-import MaterialCard from '../components/cards/MaterialCard';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { fetchMaterials } from '../services/api';
+import MaterialCard from '../components/cards/MaterialCard';
 
 export default function MaterialsPage() {
-  const [materials, setMaterials] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: materials = [], error, isLoading } = useQuery({
+    queryKey: ['materials'],
+    queryFn: fetchMaterials,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  useEffect(() => {
-    getMaterials()
-  }, []);
-
-  const getMaterials = () => {
-    setLoading(true);
-    fetchMaterials().then(setMaterials).catch(console.error);
-    setLoading(false);
+  if (isLoading) {
+    return <p>Загрузка материалов…</p>;
   }
+  if (error) {
+    return <p style={{ color: 'red' }}>Ошибка: {error.message}</p>;
+  }
+
   return (
     <div style={{ padding: '20px' }}>
       <h1>Учебные материалы</h1>
-      {loading
-        ? <p>Загрузка...</p>
-        : materials.length === 0
-          ? <p>Материалов пока нет.</p>
-          : materials.map(m => <MaterialCard key={m.id} material={m} />)
-      }
+      {materials.length === 0 ? (
+        <p>Материалов пока нет.</p>
+      ) : (
+        materials.map(mat => (
+          <MaterialCard key={mat.id} material={mat} />
+        ))
+      )}
     </div>
   );
 }
+// src/pages/MaterialsPage.js

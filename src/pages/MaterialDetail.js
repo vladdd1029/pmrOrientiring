@@ -1,38 +1,36 @@
-import React, { useState, useEffect } from 'react';
+// src/pages/MaterialDetail.js
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { supabase } from '../services/supabaseClient';
+import { useQuery } from '@tanstack/react-query';
+import { fetchMaterial } from '../services/api';
+import LoadingElement from '../components/LoadingElement';
 
 export default function MaterialDetail() {
   const { id } = useParams();
-  const [material, setMaterial] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    supabase
-      .from('materials')
-      .select('*')
-      .eq('id', id)
-      .single()
-      .then(({ data, error }) => {
-        if (error) console.error(error.message);
-        else setMaterial(data);
-        setLoading(false);
-      });
-  }, [id]);
+  const { data: material, error, isLoading } = useQuery({
+    queryKey: ['material', id],
+    queryFn: () => fetchMaterial(id),
+    staleTime: 1000 * 60 * 5,
+  });
 
-  if (loading) return <p>Загрузка...</p>;
-  if (!material) return <p>Материал не найден.</p>;
+  if (isLoading) {
+    return <LoadingElement />;
+  }
+  if (error) {
+    return <p style={{ color: 'red' }}>Ошибка при загрузке материала: {error.message}</p>;
+  }
+  if (!material) {
+    return <p>Материал не найден.</p>;
+  }
 
   const { title, description, category, file_url } = material;
+
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: 20 }}>
       <h1>{title}</h1>
       {category && <p><strong>Категория:</strong> {category}</p>}
-      {description && (
-        <div style={{ margin: '20px 0' }}>
-          <p>{description}</p>
-        </div>
-      )}
+      {description && <div style={{ margin: '20px 0' }}><p>{description}</p></div>}
       {file_url && (
         <p>
           <a href={file_url} target="_blank" rel="noopener noreferrer">
@@ -46,3 +44,4 @@ export default function MaterialDetail() {
     </div>
   );
 }
+// src/pages/MaterialDetail.js
