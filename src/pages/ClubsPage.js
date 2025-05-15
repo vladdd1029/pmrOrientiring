@@ -1,31 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../services/supabaseClient';
-import ClubCard from '../components/cards/ClubCard';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { fetchClubs } from '../services/api';
+import ClubCard from '../components/cards/ClubCard';
 
 export default function ClubsPage() {
-  const [clubs, setClubs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: clubs = [], error, isLoading } = useQuery({
+    queryKey: ['clubs'],
+    queryFn: fetchClubs,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  useEffect(() => {
-    getClubs()
-  }, []);
-
-  const getClubs = () => {
-    setLoading(true);
-    fetchClubs().then(setClubs).catch(console.error);
-    setLoading(false);
+  if (isLoading) {
+    return <p>Загрузка клубов…</p>;
+  }
+  if (error) {
+    return <p style={{ color: 'red' }}>Ошибка: {error.message}</p>;
   }
 
   return (
     <div style={{ padding: '20px' }}>
       <h1>Клубы</h1>
-      {loading
-        ? <p>Загрузка...</p>
-        : clubs.length === 0
-          ? <p>Клубов пока нет.</p>
-          : clubs.map(c => <ClubCard key={c.id} club={c} />)
-      }
+      {clubs.length === 0 ? (
+        <p>Клубов пока нет.</p>
+      ) : (
+        clubs.map(club => (
+          <ClubCard key={club.id} club={club} />
+        ))
+      )}
     </div>
   );
 }
+// src/pages/ClubsPage.js

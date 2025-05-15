@@ -1,35 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import DocumentCard from '../components/cards/DocumentCard';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { fetchDocuments } from '../services/api';
+import DocumentCard from '../components/cards/DocumentCard';
 
-const DocumentsPage = () => {
-  const [docs, setDocs] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function DocumentsPage() {
+  const { data: documents = [], error, isLoading } = useQuery({
+    queryKey: ['documents'],
+    queryFn: fetchDocuments,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  useEffect(() => {
-    getDocuments()
-  }, []);
-
-  const getDocuments = () => {
-    setLoading(true);
-    fetchDocuments().then(setDocs).catch(console.error);
-    setLoading(false);
+  if (isLoading) {
+    return <p>Загрузка документов…</p>;
   }
-
+  if (error) {
+    return <p style={{ color: 'red' }}>Ошибка: {error.message}</p>;
+  }
 
   return (
     <div style={{ padding: '20px' }}>
       <h1>Документы</h1>
-      {loading
-        ? <p>Загрузка...</p>
-        : docs.length === 0
-          ? <p>Пока документов нет.</p>
-          : docs.map(doc => (
-            <DocumentCard key={doc.id} document={doc} onDeleted={() => getDocuments()} />
-          ))
-      }
+      {documents.length === 0 ? (
+        <p>Документов пока нет.</p>
+      ) : (
+        documents.map(doc => (
+          <DocumentCard key={doc.id} document={doc} />
+        ))
+      )}
     </div>
   );
-};
-
-export default DocumentsPage;
+}
+// src/pages/DocumentsPage.js

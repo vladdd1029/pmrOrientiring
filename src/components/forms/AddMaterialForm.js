@@ -1,9 +1,7 @@
-// src/components/forms/AddMaterialForm.js
 import React, { useState } from 'react';
-// клиент для Storage
-import { supabase } from '../../services/supabaseClient';
-// централизованная функция вставки в таблицу
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addMaterial } from '../../services/api';
+import { supabase } from '../../services/supabaseClient';
 
 export default function AddMaterialForm({ onSuccess }) {
   const [formData, setFormData] = useState({
@@ -13,60 +11,54 @@ export default function AddMaterialForm({ onSuccess }) {
   });
   const [file, setFile] = useState(null);
   const [status, setStatus] = useState(null);
+  const queryClient = useQueryClient();
 
-  const handleChange = (e) => {
+  const mutation = useMutation({
+    mutationFn: addMaterial,
+    onError: err => setStatus({ success: false, message: err.message }),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['materials'] }),
+    onSuccess: () => {
+      setStatus({ success: true, message: 'Материал добавлен!' });
+      setFormData({ title: '', description: '', category: '' });
+      setFile(null);
+      if (onSuccess) onSuccess();
+    }
+  });
+
+  const handleChange = e => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(fd => ({ ...fd, [name]: value }));
   };
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
+  const handleFileChange = e => setFile(e.target.files[0]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     setStatus(null);
-    const { title, description, category } = formData;
-    if (!title) {
+    if (!formData.title) {
       setStatus({ success: false, message: 'Введите название.' });
       return;
     }
 
     let fileUrl = null;
     if (file) {
-      // загрузка в Storage
       const fileName = `${Date.now()}_${file.name}`;
       const { data: uploadData, error: uploadError } = await supabase
-        .storage
-        .from('materials')
-        .upload(fileName, file, { cacheControl: '3600', upsert: false });
+        .storage.from('materials').upload(fileName, file, { cacheControl: '3600' });
       if (uploadError) {
         setStatus({ success: false, message: uploadError.message });
         return;
       }
-      // получение публичного URL
       const { data: urlData, error: urlError } = await supabase
-        .storage
-        .from('materials')
-        .getPublicUrl(uploadData.path);
-      const publicURL = urlData?.publicUrl ?? urlData?.publicURL;
-      if (urlError || !publicURL) {
-        setStatus({ success: false, message: urlError?.message || 'Не удалось получить URL файла.' });
+        .storage.from('materials').getPublicUrl(uploadData.path);
+      fileUrl = urlData?.publicUrl ?? urlData?.publicURL;
+      if (urlError || !fileUrl) {
+        setStatus({ success: false, message: urlError?.message || 'Не удалось получить URL.' });
         return;
       }
-      fileUrl = publicURL;
     }
 
-    try {
-      // вставка через api.js
-      await addMaterial({ title, description, category, file_url: fileUrl });
-      setStatus({ success: true, message: 'Материал добавлен!' });
-      setFormData({ title: '', description: '', category: '' });
-      setFile(null);
-      if (onSuccess) onSuccess();
-    } catch (error) {
-      setStatus({ success: false, message: error.message });
-    }
+    mutation.mutate({ ...formData, file_url: fileUrl });
   };
 
   return (
@@ -88,7 +80,9 @@ export default function AddMaterialForm({ onSuccess }) {
         <label>Файл (опционально)</label><br />
         <input type="file" onChange={handleFileChange} />
       </div>
-      <button type="submit">Сохранить</button>
+      <button type="submit" disabled={mutation.isLoading}>
+        {mutation.isLoading ? 'Сохраняем…' : 'Сохранить'}
+      </button>
       {status && (
         <div style={{ color: status.success ? 'green' : 'red', marginTop: 10 }}>
           {status.message}
@@ -96,5 +90,4 @@ export default function AddMaterialForm({ onSuccess }) {
       )}
     </form>
   );
-};
-
+}
