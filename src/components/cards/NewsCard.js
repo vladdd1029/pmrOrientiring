@@ -1,51 +1,23 @@
-// src/components/NewsCard.js
-import React, { useState } from 'react';
-import { useUser } from '../../context/UserContext';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import DeleteModal from '../layout/DeleteModal';
-import { useQueryClient } from '@tanstack/react-query';
-import { fetchNewsItem } from '../../services/api';
+import { truncate } from '../../utils/helpers';
+import '../../styles/NewsCard.css'; // создадим стили ниже
 
-export default function NewsCard({ news, onDeleted }) {
-  const { profile } = useUser();
-  const [showDel, setShowDel] = useState(false);
-  const queryClient = useQueryClient();
-
+export default function NewsCard({ news }) {
+  const { id, title, content, image_url, created_at } = news;
+  const preview = truncate(content, 100);
 
   return (
-    <>
-      <Link
-        to={`/news/${news.id}`}
-        onMouseEnter={() => {
-          queryClient.prefetchQuery({
-            queryKey: ['news', news.id],
-            queryFn: () => fetchNewsItem(news.id),
-            staleTime: 1000 * 60 * 5,
-          });
-        }}
-        style={{ textDecoration: 'none', color: 'inherit' }}>
-        <div className="card">
-          <h3>{news.title}</h3>
-          <p>{new Date(news.created_at).toLocaleDateString('ru-RU')}</p>
-          <p>{news.content?.slice(0, 100)}…</p>
+    <Link to={`/news/${id}`} className="news-card">
+      {image_url && (
+        <div className="news-card-img-wrapper">
+          <img src={image_url} alt={title} className="news-card-img" loading="lazy" />
         </div>
-      </Link>
-
-      {profile?.role === 'admin' && (
-        <button className="delete-btn" onClick={() => setShowDel(true)}>×</button>
       )}
-
-      <DeleteModal
-        itemType="news"
-        item={{
-          id: news.id,
-          title: news.title,
-          competition_id: news.competition_id
-        }}
-        isOpen={showDel}
-        onClose={() => setShowDel(false)}
-        onDeleted={onDeleted}
-      />
-    </>
+      <div className="news-card-body">
+        <h3 className="news-card-title">{title}</h3>
+        <p className="news-card-preview">{preview}</p>
+      </div>
+    </Link>
   );
 }
