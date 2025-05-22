@@ -46,8 +46,8 @@ function App() {
         {/* Публичные */}
         <Route exact path="/" component={Main} />
 
+        <Route exact path="/competitions/:id" component={CompetitionDetail} />
         <Route path="/competitions" component={CompetitionsPage} />
-        <Route path="/competition/:id" component={CompetitionDetail} />
 
         <Route path="/news" exact component={NewsPage} />
         <Route path="/news/:id" component={NewsDetail} />

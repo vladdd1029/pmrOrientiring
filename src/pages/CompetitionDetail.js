@@ -5,69 +5,67 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchCompetition, fetchDocuments } from '../services/api';
 import LoadingElement from '../components/LoadingElement';
 import { formatRUDate } from '../utils/formatDate';
+import '../styles/CompetitionDetail.css'; // новый CSS
 
 export default function CompetitionDetail() {
   const { id } = useParams();
 
-  const {
-    data: competition,
-    error: compError,
-    isLoading: compLoading,
-  } = useQuery({
+  const { data: comp, error: compErr, isLoading: compLoad } = useQuery({
     queryKey: ['competition', id],
     queryFn: () => fetchCompetition(id),
     staleTime: 1000 * 60 * 5,
   });
-
-  const {
-    data: documents = [],
-    error: docsError,
-    isLoading: docsLoading,
-  } = useQuery({
+  const { data: docs = [], isLoading: docsLoad } = useQuery({
     queryKey: ['documentsByCompetition', id],
-    queryFn: () => fetchDocuments().then(arr => arr.filter(d => d.competition_id === id)),
+    queryFn: () => fetchDocuments().then(a => a.filter(d => d.competition_id === id)),
     staleTime: 1000 * 60 * 5,
   });
 
-  if (compLoading || docsLoading) {
-    return <LoadingElement />;
-  }
-  if (compError) {
-    return <p style={{ color: 'red' }}>Ошибка при загрузке соревнования: {compError.message}</p>;
-  }
-  if (!competition) {
-    return <p>Соревнование не найдено.</p>;
-  }
+  if (compLoad || docsLoad) return <LoadingElement />;
+  if (compErr) return <p className="error">Ошибка: {compErr.message}</p>;
+  if (!comp) return <p>Соревнование не найдено.</p>;
 
-  const { title, date, location, description } = competition;
+  const { title, date, location, description, image_url } = comp;
   const formattedDate = formatRUDate(date);
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>{title}</h1>
-      <p><strong>Дата:</strong> {formattedDate}</p>
-      <p><strong>Место:</strong> {location}</p>
-      {description && <div style={{ margin: '20px 0' }}><p>{description}</p></div>}
-
-      <h2>Документы</h2>
-      {documents.length > 0 ? (
-        <ul>
-          {documents.map(doc => (
-            <li key={doc.id}>
-              <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                {doc.title}
-              </a>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Документов пока нет.</p>
+    <div className="competition-detail-page">
+      {/* Хедер с размытым фоном */}
+      {image_url && (
+        <div
+          className="competition-header"
+          style={{ backgroundImage: `url(${image_url})` }}
+        />
       )}
 
-      <Link to="/competitions">
-        <button>Вернуться к списку соревнований</button>
-      </Link>
+      {/* Контейнер с контентом */}
+      <div className="competition-content">
+        <h1 className="comp-title">{title}</h1>
+        <p className="comp-meta">
+          <strong>Дата:</strong> {formattedDate} &nbsp;|&nbsp;
+          <strong>Место:</strong> {location}
+        </p>
+        {description && <p className="comp-desc">{description}</p>}
+
+        <h2>Документы</h2>
+        {docs.length ? (
+          <ul className="comp-docs-list">
+            {docs.map(d => (
+              <li key={d.id}>
+                <a href={d.file_url} target="_blank" rel="noopener noreferrer">
+                  {d.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>Документов пока нет.</p>
+        )}
+
+        <Link to="/competitions">
+          <button className="back-button">← Вернуться к списку</button>
+        </Link>
+      </div>
     </div>
   );
 }
-// src/pages/CompetitionDetail.js
