@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiFileText, FiFile, FiImage } from 'react-icons/fi';
+import { FiFileText, FiFile } from 'react-icons/fi';
 import '../../styles/DocumentCard.css'; // создадим стили ниже
 
 export default function DocumentCard({ document }) {
@@ -9,7 +9,7 @@ export default function DocumentCard({ document }) {
   let content;
   if (['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp'].includes(ext)) {
     // превью для изображений
-    content = <img src={file_url} alt={title} className="doc-card-img" loading="lazy" />;
+    content = <img onError={e => { e.currentTarget.src = '/placeholder.png'; }} src={file_url} alt={title} className="doc-card-img" loading="lazy" />;
   } else if (ext === 'pdf') {
     content = <FiFileText size={48} />;
   } else {

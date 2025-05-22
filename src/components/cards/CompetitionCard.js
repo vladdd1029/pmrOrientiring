@@ -11,8 +11,8 @@ export default function CompetitionCard({ competition }) {
     <Link to={`/competitions/${id}`} className="competition-card">
       <div className="competition-card-img-wrapper">
         {image_url
-          ? <img src={image_url} alt={title} className="competition-card-img" loading="lazy"/>
-          : <div className="competition-card-img placeholder"/>}
+          ? <img onError={e => { e.currentTarget.src = '/placeholder.png'; }} src={image_url} alt={title} className="competition-card-img" loading="lazy" />
+          : <div className="competition-card-img placeholder" />}
       </div>
       <div className="competition-card-body">
         <h3 className="competition-card-title">{title}</h3>

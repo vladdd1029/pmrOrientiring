@@ -9,11 +9,14 @@ export default function NewsCard({ news }) {
 
   return (
     <Link to={`/news/${id}`} className="news-card">
-      {image_url && (
+
         <div className="news-card-img-wrapper">
-          <img src={image_url} alt={title} className="news-card-img" loading="lazy" />
+          {image_url
+            ? <img onError={e => { e.currentTarget.src = '/placeholder.png'; }}
+              src={image_url} alt={title} className="news-card-img" loading="lazy" />
+            : <div className="news-card-img placeholder" />}
         </div>
-      )}
+      
       <div className="news-card-body">
         <h3 className="news-card-title">{title}</h3>
         <p className="news-card-preview">{preview}</p>
