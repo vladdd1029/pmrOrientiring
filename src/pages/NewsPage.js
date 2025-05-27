@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchNews } from '../services/api';
 import NewsCard from '../components/cards/NewsCard';
-import '../styles/NewsPage.css';
+import '../styles/CardsPage.css';
 import '../styles/cards-grid.css';
 
 export default function NewsPage() {
@@ -13,14 +13,14 @@ export default function NewsPage() {
   });
 
   if (isLoading) {
-    return <p>Загрузка новостей…</p>;
+    return <p className='loading-text'>Загрузка новостей…</p>;
   }
   if (error) {
-    return <p style={{ color: 'red' }}>Ошибка: {error.message}</p>;
+    return <p className='error-text'>Ошибка: {error.message}</p>;
   }
 
   return (
-    <div className="news-page">
+    <div className="page">
       <h1>Новости</h1>
 
       {newsList.length === 0 && <p>Новостей пока нет.</p>}

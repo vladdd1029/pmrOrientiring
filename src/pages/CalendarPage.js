@@ -3,6 +3,8 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { supabase } from '../services/supabaseClient';
 import CompetitionCard from '../components/cards/CompetitionCard';
+import '../styles/CardsPage.css';
+import '../styles/calendar.css';
 
 const CalendarPage = () => {
   const [events, setEvents] = useState([]);
@@ -25,16 +27,17 @@ const CalendarPage = () => {
   );
 
   return (
-    <div style={{ padding: 20 }}>
+    <div className='page' style={{ padding: 20 }}>
       <h1>Календарь соревнований</h1>
       <Calendar
+        className="my-calendar"               // общий класс
         value={selectedDate}
         onChange={setSelectedDate}
         tileClassName={({ date, view }) => {
           if (view !== 'month') return null;
           // для каждого тайла сравниваем локальную дату
           const dateStr = date.toLocaleDateString('en-CA');
-          return events.some(ev => ev.date === dateStr) ? 'has-event' : null;
+          return events.some(ev => ev.date === dateStr) ? 'my-has-event' : 'my-tile';
         }}
       />
       <div style={{ marginTop: 20 }}>

@@ -13,7 +13,7 @@ const AdminPanel = () => {
   const closeModal = () => setModalType(null);
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className='page' >
       <h1>Админпанель</h1>
       <div className="admin-cards-grid">
         <div className="admin-card add-card" onClick={() => setModalType('competition')}>

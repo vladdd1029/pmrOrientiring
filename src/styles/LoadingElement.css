@@ -4,18 +4,22 @@
   align-items: center;
   gap: 10px;
   height: 100%;
+  position: fixed;
+  y: 50%;
+  left: 50%;
 }
 
 .dot {
   width: 15px;
   height: 15px;
-background: linear-gradient(45deg, #ffffff, #ff9800); /* Бело-оранжевый градиент */
+  background: #ff9800;
+  /* Бело-оранжевый градиент */
   border-radius: 50%;
   animation: bounce 1.5s infinite ease-in-out;
 }
 
 .dot:nth-child(2) {
-  animation-delay: 0.3s;
+  animation-delay: 0.5s;
 }
 
 .dot:nth-child(3) {
@@ -23,9 +27,13 @@ background: linear-gradient(45deg, #ffffff, #ff9800); /* Бело-оранжев
 }
 
 @keyframes bounce {
-  0%, 80%, 100% {
+
+  0%,
+  80%,
+  100% {
     transform: scale(0);
   }
+
   40% {
     transform: scale(1);
   }

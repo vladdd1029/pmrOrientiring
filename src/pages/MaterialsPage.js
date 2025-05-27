@@ -2,6 +2,8 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchMaterials } from '../services/api';
 import MaterialCard from '../components/cards/MaterialCard';
+import '../styles/CardsPage.css';
+import '../styles/cards-grid.css';
 
 export default function MaterialsPage() {
   const { data: materials = [], error, isLoading } = useQuery({
@@ -11,21 +13,23 @@ export default function MaterialsPage() {
   });
 
   if (isLoading) {
-    return <p>Загрузка материалов…</p>;
+    return <p className='loading-text'>Загрузка материалов…</p>;
   }
   if (error) {
-    return <p style={{ color: 'red' }}>Ошибка: {error.message}</p>;
+    return <p className='error-text'>Ошибка: {error.message}</p>;
   }
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className='page'>
       <h1>Учебные материалы</h1>
       {materials.length === 0 ? (
         <p>Материалов пока нет.</p>
       ) : (
-        materials.map(mat => (
-          <MaterialCard key={mat.id} material={mat} />
-        ))
+        <div className='cards-grid'>
+          {materials.map(mat => (
+            <MaterialCard key={mat.id} material={mat} />
+          ))}
+        </div>
       )}
     </div>
   );

@@ -1,9 +1,9 @@
 body {
   margin: 0;
   font-family: 'Roboto', Arial, sans-serif;
-  background: #f9f9f9; /* Светло-серый фон */
   color: #333333; /* Темно-серый текст */
   line-height: 1.6;
+  background-image: url('../images/map-background.jpg');
 }
 
 .App {

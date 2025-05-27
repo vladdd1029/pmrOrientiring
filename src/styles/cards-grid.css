@@ -2,7 +2,7 @@
 .cards-grid {
   display: grid;
   gap: 16px;
-  width: 60%;
+  width: 100%;
   max-width: 1200px;
   justify-self: center;
 }
