@@ -1,7 +1,7 @@
 {
   "name": "new-website",
   "version": "1.0.0",
-  "homepage": ".",
+  "homepage": "https://vladdd1029.github.io/pmrOrientiring",
   "description": "A web application for competitions, news, calendar, documents, learning materials, and clubs contacts.",
   "main": "src/index.js",
   "scripts": {
