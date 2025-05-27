@@ -3,6 +3,9 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchCompetitions } from '../services/api';
 import CompetitionCard from '../components/cards/CompetitionCard';
+import '../styles/CardsPage.css';
+import '../styles/cards-grid.css';
+
 
 export default function CompetitionsPage() {
   const { data: competitions, error, isLoading } = useQuery({
@@ -14,7 +17,7 @@ export default function CompetitionsPage() {
   if (isLoading) {
     return (
       <div style={{ padding: '20px' }}>
-        <p>Загрузка соревнований…</p>
+        <p className='loading-text'>Загрузка соревнований…</p>
       </div>
     );
   }
@@ -22,7 +25,7 @@ export default function CompetitionsPage() {
   if (error) {
     return (
       <div style={{ padding: '20px' }}>
-        <p style={{ color: 'red' }}>
+        <p className='error-text'>
           Ошибка при загрузке соревнований: {error.message}
         </p>
       </div>
@@ -30,14 +33,15 @@ export default function CompetitionsPage() {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="page">
       <h1>Все соревнования</h1>
-      {competitions.length === 0 ? (
-        <p>Соревнований ещё нет.</p>
-      ) : (
-        competitions.map(comp => (
-          <CompetitionCard key={comp.id} competition={comp} />
-        ))
+      {competitions.length === 0 && <p>Соревнований ещё нет.</p>}
+      {competitions.length > 0 && (
+        <div className="cards-grid">
+          {competitions.map(c => (
+            <CompetitionCard key={c.id} competition={c} />
+          ))}
+        </div>
       )}
     </div>
   );

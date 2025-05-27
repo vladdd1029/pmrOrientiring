@@ -1,17 +1,21 @@
 .document-card {
   display: inline-block;
   width: 150px;
-  border: 1px solid #ddd;
+  height: 150px;
   border-radius: 6px;
-  text-decoration: none;
   color: inherit;
   margin: 8px;
   padding: 10px;
   text-align: center;
-  transition: box-shadow .2s;
+  background-color: rgb(237, 237, 237);
+  transition: all .2s;
+    box-shadow: 0 0px 12px rgba(0,0,0,.2);
+
 }
 .document-card:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  box-shadow: 0 0px 12px rgba(0,0,0,.25);
+  transform: scale(1.1);
+  color: orange;
 }
 .doc-card-icon {
   margin-bottom: 8px;

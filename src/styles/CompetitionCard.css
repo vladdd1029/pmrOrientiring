@@ -1,36 +1,51 @@
+/* CompetitionsCard.css */
 .competition-card {
   display: block;
-  border: 1px solid #ddd;
   border-radius: 8px;
   overflow: hidden;
   text-decoration: none;
+  background: aliceblue;
   color: inherit;
-  transition: box-shadow .2s;
+  box-shadow: 0 0px 4px rgba(0, 0, 0, .3);
+  transition: all .5s, transform .3s, ;
 }
+
 .competition-card:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, .3);
+  transform: scale(1.1);
+  background-color: rgb(235, 235, 235);
 }
+.competition-card:active {
+  box-shadow: 0 0px 4px rgba(0, 0, 0, .3);
+  transform: scale(1.07);
+}
+
 .competition-card-img-wrapper {
   width: 100%;
   height: 140px;
   background: #f0f0f0;
 }
+
 .competition-card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 .competition-card-img.placeholder {
   /* простая серая заглушка */
   background: #e0e0e0;
 }
+
 .competition-card-body {
   padding: 12px;
 }
+
 .competition-card-title {
   margin: 0 0 8px;
   font-size: 1.1em;
 }
+
 .competition-card-date,
 .competition-card-location {
   margin: 4px 0;

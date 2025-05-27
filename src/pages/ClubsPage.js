@@ -11,21 +11,23 @@ export default function ClubsPage() {
   });
 
   if (isLoading) {
-    return <p>Загрузка клубов…</p>;
+    return <p className='loading-text'>Загрузка клубов…</p>;
   }
   if (error) {
-    return <p style={{ color: 'red' }}>Ошибка: {error.message}</p>;
+    return <p className='error-text'>Ошибка: {error.message}</p>;
   }
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className='page'>
       <h1>Клубы</h1>
       {clubs.length === 0 ? (
         <p>Клубов пока нет.</p>
       ) : (
-        clubs.map(club => (
-          <ClubCard key={club.id} club={club} />
-        ))
+        <div className='cards-grid'>
+          {clubs.map(club => (
+            <ClubCard key={club.id} club={club} />
+          ))}
+        </div>
       )}
     </div>
   );

@@ -11,21 +11,23 @@ export default function DocumentsPage() {
   });
 
   if (isLoading) {
-    return <p>Загрузка документов…</p>;
+    return <p className='loading-text'>Загрузка документов…</p>;
   }
   if (error) {
-    return <p style={{ color: 'red' }}>Ошибка: {error.message}</p>;
+    return <p className='error-text'>Ошибка: {error.message}</p>;
   }
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className='page' >
       <h1>Документы</h1>
       {documents.length === 0 ? (
         <p>Документов пока нет.</p>
       ) : (
-        documents.map(doc => (
+        <div>
+          {documents.map(doc => (
           <DocumentCard key={doc.id} document={doc} />
-        ))
+          ))}
+        </div>
       )}
     </div>
   );
