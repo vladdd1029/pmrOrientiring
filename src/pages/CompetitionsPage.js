@@ -3,6 +3,8 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchCompetitions } from '../services/api';
 import CompetitionCard from '../components/cards/CompetitionCard';
+import '../styles/CompetitionsPage.css';
+
 
 export default function CompetitionsPage() {
   const { data: competitions, error, isLoading } = useQuery({
@@ -30,14 +32,15 @@ export default function CompetitionsPage() {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="competitions-page">
       <h1>Все соревнования</h1>
-      {competitions.length === 0 ? (
-        <p>Соревнований ещё нет.</p>
-      ) : (
-        competitions.map(comp => (
-          <CompetitionCard key={comp.id} competition={comp} />
-        ))
+      {competitions.length === 0 && <p>Соревнований ещё нет.</p>}
+      {competitions.length > 0 && (
+        <div className="competitions-grid">
+          {competitions.map(c => (
+            <CompetitionCard key={c.id} competition={c} />
+          ))}
+        </div>
       )}
     </div>
   );
