@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchCompetitions } from '../services/api';
 import CompetitionCard from '../components/cards/CompetitionCard';
 import '../styles/CompetitionsPage.css';
+import '../styles/cards-grid.css';
 
 
 export default function CompetitionsPage() {
@@ -36,7 +37,7 @@ export default function CompetitionsPage() {
       <h1>Все соревнования</h1>
       {competitions.length === 0 && <p>Соревнований ещё нет.</p>}
       {competitions.length > 0 && (
-        <div className="competitions-grid">
+        <div className="cards-grid">
           {competitions.map(c => (
             <CompetitionCard key={c.id} competition={c} />
           ))}

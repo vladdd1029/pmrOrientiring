@@ -7,27 +7,3 @@ h1{
   text-align: center;
   margin-bottom: 20px;
 }
-
-.competitions-grid {
-  width: 60%;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-top: 20px;
-  justify-self: center;
-
-}
-
-/* При ширине экрана до 768px — 2 колонки */
-@media (max-width: 768px) {
-  .competitions-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* При очень узких экранах — 1 колонка */
-@media (max-width: 480px) {
-  .competitions-grid {
-    grid-template-columns: 1fr;
-  }
-}

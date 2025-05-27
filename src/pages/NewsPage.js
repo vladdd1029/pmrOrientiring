@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchNews } from '../services/api';
 import NewsCard from '../components/cards/NewsCard';
 import '../styles/NewsPage.css';
+import '../styles/cards-grid.css';
 
 export default function NewsPage() {
   const { data: newsList = [], error, isLoading } = useQuery({
@@ -25,7 +26,7 @@ export default function NewsPage() {
       {newsList.length === 0 && <p>Новостей пока нет.</p>}
 
       {newsList.length > 0 && (
-        <div className="news-grid">
+        <div className="cards-grid">
           {newsList.map(item => (
             <NewsCard key={item.id} news={item} />
           ))}
